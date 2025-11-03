@@ -1,0 +1,7 @@
+obsws-python==1.8.0
+python-dotenv==1.2.1
+watchdog==6.0.0
+newsapi-python==0.2.7
+groq==0.11.0
+flask==3.0.0
+flask-cors==4.0.0

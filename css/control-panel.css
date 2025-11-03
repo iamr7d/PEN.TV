@@ -1,0 +1,134 @@
+/* Master Control Panel */
+.master-control {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 320px;
+    background: rgba(0, 0, 0, 0.95);
+    border-radius: 12px;
+    padding: 20px;
+    color: white;
+    font-family: 'Arial', sans-serif;
+    z-index: 1000;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.master-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.theme-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.theme-title {
+    color: #dc143c;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.control-group {
+    margin-bottom: 15px;
+}
+
+.control-label {
+    color: #cccccc;
+    font-size: 12px;
+    font-weight: 500;
+    display: block;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.control-textarea {
+    width: 100%;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 60px;
+}
+
+.control-textarea:focus {
+    outline: none;
+    border-color: #dc143c;
+    box-shadow: 0 0 10px rgba(220, 20, 60, 0.3);
+}
+
+.control-button {
+    width: 100%;
+    padding: 12px;
+    background: linear-gradient(135deg, #dc143c 0%, #b91c3c 100%);
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.control-button:hover {
+    background: linear-gradient(135deg, #b91c3c 0%, #dc143c 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+}
+
+.control-button:active {
+    transform: translateY(0);
+}
+
+/* Keyboard Shortcuts Info */
+.shortcuts-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.shortcuts-title {
+    color: #ffffff;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.shortcut-item {
+    color: #cccccc;
+    font-size: 11px;
+    margin-bottom: 5px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.shortcut-key {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+}

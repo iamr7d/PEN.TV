@@ -1,0 +1,34 @@
+{
+  "name": "r7d-news-graphics",
+  "version": "1.0.0",
+  "description": "Professional news channel graphics system with modular architecture",
+  "main": "index.html",
+  "scripts": {
+    "start": "live-server .",
+    "dev": "live-server . --port=3000",
+    "build": "echo 'No build process needed for static files'",
+    "lint": "echo 'Add your preferred linter here'"
+  },
+  "keywords": [
+    "news",
+    "graphics",
+    "broadcast",
+    "streaming",
+    "obs",
+    "television",
+    "live"
+  ],
+  "author": "R7D Channel",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "local"
+  },
+  "bugs": {
+    "url": "local"
+  },
+  "homepage": "local"
+}

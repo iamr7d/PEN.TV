@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticker Data Test</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            color: #00ff00;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        h1 { color: #ff0000; }
+        .section {
+            background: #000;
+            padding: 15px;
+            margin: 15px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+        }
+        .success { color: #00ff00; }
+        .error { color: #ff0000; }
+        .warning { color: #ffaa00; }
+        pre {
+            background: #0a0a0a;
+            padding: 10px;
+            overflow-x: auto;
+            border-left: 3px solid #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔍 Ticker Data Diagnostic Tool</h1>
+    
+    <div class="section">
+        <h2>1. Loading ticker_data.js...</h2>
+        <div id="load-status">Checking...</div>
+    </div>
+    
+    <div class="section">
+        <h2>2. TICKER_TEXT Status</h2>
+        <div id="ticker-text-status">Checking...</div>
+        <pre id="ticker-text-preview"></pre>
+    </div>
+    
+    <div class="section">
+        <h2>3. TICKER_ITEMS Status</h2>
+        <div id="ticker-items-status">Checking...</div>
+        <pre id="ticker-items-preview"></pre>
+    </div>
+    
+    <div class="section">
+        <h2>4. Last Updated</h2>
+        <div id="timestamp-status">Checking...</div>
+    </div>
+    
+    <div class="section">
+        <h2>5. Recommendations</h2>
+        <div id="recommendations"></div>
+    </div>
+
+    <script src="ticker_data.js" onerror="handleLoadError()"></script>
+    <script>
+        function handleLoadError() {
+            document.getElementById('load-status').innerHTML = 
+                '<span class="error">❌ FAILED to load ticker_data.js</span><br>' +
+                '<span class="warning">Run: <code>python news_llm_generator.py</code> to generate it</span>';
+        }
+
+        // Wait a bit for ticker_data.js to load
+        setTimeout(() => {
+            // Check load status
+            if (typeof window.TICKER_TEXT !== 'undefined' || typeof window.TICKER_ITEMS !== 'undefined') {
+                document.getElementById('load-status').innerHTML = 
+                    '<span class="success">✅ ticker_data.js loaded successfully!</span>';
+            } else {
+                document.getElementById('load-status').innerHTML = 
+                    '<span class="error">❌ ticker_data.js loaded but no data found</span>';
+            }
+
+            // Check TICKER_TEXT
+            if (typeof window.TICKER_TEXT === 'string' && window.TICKER_TEXT.trim()) {
+                const text = window.TICKER_TEXT.trim();
+                document.getElementById('ticker-text-status').innerHTML = 
+                    `<span class="success">✅ TICKER_TEXT found (${text.length} characters)</span>`;
+                document.getElementById('ticker-text-preview').textContent = 
+                    text.substring(0, 300) + (text.length > 300 ? '...' : '');
+            } else {
+                document.getElementById('ticker-text-status').innerHTML = 
+                    '<span class="error">❌ TICKER_TEXT not found or empty</span>';
+            }
+
+            // Check TICKER_ITEMS
+            if (Array.isArray(window.TICKER_ITEMS) && window.TICKER_ITEMS.length) {
+                document.getElementById('ticker-items-status').innerHTML = 
+                    `<span class="success">✅ TICKER_ITEMS found (${window.TICKER_ITEMS.length} items)</span>`;
+                document.getElementById('ticker-items-preview').textContent = 
+                    JSON.stringify(window.TICKER_ITEMS.slice(0, 5), null, 2) + 
+                    (window.TICKER_ITEMS.length > 5 ? '\n... and ' + (window.TICKER_ITEMS.length - 5) + ' more' : '');
+            } else {
+                document.getElementById('ticker-items-status').innerHTML = 
+                    '<span class="error">❌ TICKER_ITEMS not found or empty</span>';
+            }
+
+            // Check timestamp
+            if (typeof window.TICKER_UPDATED_AT === 'string') {
+                const date = new Date(window.TICKER_UPDATED_AT);
+                const now = new Date();
+                const ageMinutes = Math.floor((now - date) / 60000);
+                document.getElementById('timestamp-status').innerHTML = 
+                    `<span class="success">✅ Last updated: ${window.TICKER_UPDATED_AT}</span><br>` +
+                    `<span class="warning">(${ageMinutes} minutes ago)</span>`;
+            } else {
+                document.getElementById('timestamp-status').innerHTML = 
+                    '<span class="error">❌ No timestamp found</span>';
+            }
+
+            // Recommendations
+            let recommendations = [];
+            if (typeof window.TICKER_TEXT === 'undefined' && typeof window.TICKER_ITEMS === 'undefined') {
+                recommendations.push('<span class="error">🔴 CRITICAL: No data found! Run <code>python news_llm_generator.py</code></span>');
+            }
+            if (typeof window.TICKER_TEXT !== 'undefined' && window.TICKER_TEXT.length < 100) {
+                recommendations.push('<span class="warning">⚠️ Ticker text is very short - may need refresh</span>');
+            }
+            if (typeof window.TICKER_ITEMS !== 'undefined' && window.TICKER_ITEMS.length < 5) {
+                recommendations.push('<span class="warning">⚠️ Only ' + window.TICKER_ITEMS.length + ' ticker items - regenerate for more variety</span>');
+            }
+            if (recommendations.length === 0) {
+                recommendations.push('<span class="success">✅ All checks passed! ticker_data.js is healthy</span>');
+                recommendations.push('<span class="success">✅ Ready to use in ultimate-news-graphics.html</span>');
+            }
+            document.getElementById('recommendations').innerHTML = recommendations.join('<br>');
+
+        }, 100);
+    </script>
+</body>
+</html>

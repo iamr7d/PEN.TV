@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>R7D News Graphics System</title>
+    
+    <!-- CSS Files -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/broadcast-quality.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/breaking-news.css">
+    <link rel="stylesheet" href="css/video-box.css">
+    <link rel="stylesheet" href="css/ticker.css">
+    <link rel="stylesheet" href="css/control-panel.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <!-- Main Background Video -->
+    <video id="bg-video" autoplay muted loop>
+        <source src="D:\UAL\PROJECTS\PERSONAL\LIVE\bg video.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- Dim Overlay for Background Video -->
+    <div class="bg-dim-overlay"></div>
+    
+    <!-- Broadcast Safe Area Guide (Hidden by default) -->
+    <div class="broadcast-safe-area" id="safeArea"></div>
+    
+    <!-- Control Panel -->
+    <div id="control-panel"></div>
+    
+    <!-- Breaking News Banner -->
+    <div id="breaking-banner"></div>
+    
+    <!-- BBC Breaking News -->
+    <div id="bbc-breaking"></div>
+    
+    <!-- Ticker -->
+    <div id="ticker"></div>
+    
+    <!-- Video Box -->
+    <div id="video-box"></div>
+    
+    <!-- JavaScript Files -->
+    <script src="js/components/control-panel.js"></script>
+    <script src="js/components/breaking-news.js"></script>
+    <script src="js/components/ticker.js"></script>
+    <script src="js/components/video-box.js"></script>
+    <script src="js/components/streaming.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,46 @@
+/* Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Helvetica Neue', 'Arial', sans-serif;
+    background: #000000;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Background Video Styles */
+#bg-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -2;
+}
+
+/* Dim Overlay for Background Video */
+.bg-dim-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: -1;
+    pointer-events: none;
+}
+
+/* Common utilities */
+.hidden {
+    display: none !important;
+}
+
+.visible {
+    display: block !important;
+}

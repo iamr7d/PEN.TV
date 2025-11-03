@@ -1,0 +1,193 @@
+{
+  "format": 3,
+  "name": "R7D News Live",
+  "sources": [
+    {
+      "name": "Main Program",
+      "type": "scene",
+      "settings": {},
+      "id": 1
+    },
+    {
+      "name": "Breaking News Only",
+      "type": "scene",
+      "settings": {},
+      "id": 2
+    },
+    {
+      "name": "Full Graphics",
+      "type": "scene", 
+      "settings": {},
+      "id": 3
+    },
+    {
+      "name": "Studio Background",
+      "type": "ffmpeg_source",
+      "settings": {
+        "local_file": "D:/UAL/PROJECTS/PERSONAL/LIVE/bg video.mp4",
+        "is_looping": true,
+        "restart_on_activate": true,
+        "hw_decode": true
+      },
+      "id": 4
+    },
+    {
+      "name": "R7D HTML Graphics",
+      "type": "browser_source",
+      "settings": {
+        "is_local_file": true,
+        "local_file": "D:/UAL/PROJECTS/PERSONAL/LIVE/index.html",
+        "width": 1920,
+        "height": 1080,
+        "fps": 60,
+        "shutdown": false,
+        "refresh": true,
+        "restart_when_active": true
+      },
+      "id": 5
+    },
+    {
+      "name": "Program Video",
+      "type": "ffmpeg_source",
+      "settings": {
+        "local_file": "D:/UAL/PROJECTS/PERSONAL/LIVE/ad01.mp4",
+        "is_looping": true,
+        "restart_on_activate": true,
+        "hw_decode": true
+      },
+      "id": 6
+    },
+    {
+      "name": "Breaking Headline",
+      "type": "text_gdiplus_v2",
+      "settings": {
+        "text": "മുഖ്യമന്ത്രി നിരഞ്ഞ് ആമയിൽ പ്രഖ്യാപനം നടത്തുന്നു",
+        "font": {"face": "Arial", "style": 1, "size": 48},
+        "color1": 4294967295,
+        "outline": true,
+        "outline_size": 3,
+        "outline_color": 4278190080
+      },
+      "id": 7
+    },
+    {
+      "name": "Live Ticker",
+      "type": "text_gdiplus_v2",
+      "settings": {
+        "text": "🔴 LIVE • R7D NEWS • സർക്കാർ പദ്ധതികൾ • സാമ്പത്തിക പരിഷ്കാരങ്ങൾ • വികസന പദ്ധതികൾ •",
+        "font": {"face": "Arial", "style": 1, "size": 28},
+        "color1": 4294967295,
+        "outline": true,
+        "outline_size": 2,
+        "outline_color": 4278190080
+      },
+      "id": 8
+    },
+    {
+      "name": "R7D Logo Overlay",
+      "type": "image_source",
+      "settings": {
+        "file": "D:/UAL/PROJECTS/PERSONAL/LIVE/R7D.svg"
+      },
+      "id": 9
+    },
+    {
+      "name": "Webcam",
+      "type": "dshow_input",
+      "settings": {
+        "video_device_id": "default"
+      },
+      "id": 10
+    }
+  ],
+  "scene_order": [
+    {"name": "Main Program"},
+    {"name": "Breaking News Only"},
+    {"name": "Full Graphics"}
+  ],
+  "scene_items": [
+    {
+      "scene_name": "Main Program",
+      "items": [
+        {
+          "source_name": "Studio Background",
+          "align": 5,
+          "pos": {"x": 0, "y": 0},
+          "scale": {"x": 1.0, "y": 1.0},
+          "bounds_type": 0
+        },
+        {
+          "source_name": "Program Video",
+          "align": 5,
+          "pos": {"x": 960, "y": 300},
+          "scale": {"x": 0.8, "y": 0.8},
+          "bounds_type": 2,
+          "bounds": {"x": 1400, "y": 800}
+        },
+        {
+          "source_name": "R7D HTML Graphics",
+          "align": 5,
+          "pos": {"x": 0, "y": 0},
+          "scale": {"x": 1.0, "y": 1.0},
+          "bounds_type": 0
+        },
+        {
+          "source_name": "R7D Logo Overlay",
+          "align": 3,
+          "pos": {"x": 1800, "y": 50},
+          "scale": {"x": 0.3, "y": 0.3}
+        }
+      ]
+    },
+    {
+      "scene_name": "Breaking News Only",
+      "items": [
+        {
+          "source_name": "Studio Background",
+          "align": 5,
+          "pos": {"x": 0, "y": 0},
+          "scale": {"x": 1.0, "y": 1.0},
+          "bounds_type": 0
+        },
+        {
+          "source_name": "Breaking Headline",
+          "align": 5,
+          "pos": {"x": 960, "y": 400},
+          "scale": {"x": 1.0, "y": 1.0}
+        },
+        {
+          "source_name": "Live Ticker",
+          "align": 8,
+          "pos": {"x": 40, "y": 1000},
+          "scale": {"x": 1.0, "y": 1.0}
+        },
+        {
+          "source_name": "R7D Logo Overlay",
+          "align": 3,
+          "pos": {"x": 1800, "y": 50},
+          "scale": {"x": 0.4, "y": 0.4}
+        }
+      ]
+    },
+    {
+      "scene_name": "Full Graphics",
+      "items": [
+        {
+          "source_name": "R7D HTML Graphics",
+          "align": 5,
+          "pos": {"x": 0, "y": 0},
+          "scale": {"x": 1.0, "y": 1.0},
+          "bounds_type": 0
+        },
+        {
+          "source_name": "Webcam",
+          "align": 3,
+          "pos": {"x": 1520, "y": 200},
+          "scale": {"x": 0.6, "y": 0.6},
+          "bounds_type": 2,
+          "bounds": {"x": 400, "y": 300}
+        }
+      ]
+    }
+  ]
+}

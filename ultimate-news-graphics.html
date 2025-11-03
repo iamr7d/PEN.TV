@@ -1,0 +1,3832 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1920, initial-scale=1.0">
+    <title>Ultimate News Graphics Hub - Full HD 1080p60</title>
+    
+    <!-- 
+    ╔════════════════════════════════════════════════════════════════════════╗
+    ║         FULL HD 1080p60 BROADCAST NEWS OVERLAY SYSTEM                  ║
+    ║                    Professional Quality Settings                        ║
+    ╚════════════════════════════════════════════════════════════════════════╝
+    
+    🎥 OBS STUDIO BROWSER SOURCE SETTINGS:
+    ┌────────────────────────────────────────────────────────────────────┐
+    │ Width:                   1920 px                                    │
+    │ Height:                  1080 px                                    │
+    │ FPS:                     60                                         │
+    │ CSS Width:               1920 px                                    │
+    │ CSS Height:              1080 px                                    │
+    │ Use custom frame rate:   ✓ Enabled (60 fps)                        │
+    │ Shutdown when not visible: ✗ Disabled                              │
+    │ Refresh on scene active: ✗ Disabled                                │
+    │ Webpage Control Level:   Read user config                          │
+    └────────────────────────────────────────────────────────────────────┘
+    
+    🎬 VIDEO ENCODING SETTINGS - 4K ULTRA HD:
+    ┌────────────────────────────────────────────────────────────────────┐
+    │ Resolution:              3840×2160 (4K UHD)                         │
+    │ Frame Rate:              60 fps                                     │
+    │ Video Bitrate:           25000 Kbps (25 Mbps)                       │
+    │ Encoder:                 NVENC H.264 / H.265 (HEVC)                 │
+    │ Preset:                  Max Quality                                │
+    │ Profile:                 High / Main10                              │
+    │ Keyframe Interval:       2 seconds                                  │
+    │ Color Space:             Rec. 709 / Rec. 2020                       │
+    │ Color Range:             Full (0-255)                               │
+    │ Color Format:            NV12 / P010                                │
+    └────────────────────────────────────────────────────────────────────┘
+    
+    🔊 AUDIO ENCODING SETTINGS (DOLBY ATMOS-STYLE):
+    ┌────────────────────────────────────────────────────────────────────┐
+    │ Sample Rate:             48000 Hz (48 kHz)                          │
+    │ Bitrate:                 320 Kbps                                   │
+    │ Codec:                   AAC (Advanced Audio Coding)                │
+    │ Channels:                Stereo (2.0)                               │
+    │ Mix:                     Binaural / Surround Reverb → Stereo        │
+    │ Processing:              Atmospheric depth simulation               │
+    │ Dynamic Range:           High (simulated Atmos-style depth)         │
+    │ Normalization:           -16 LUFS (broadcast standard)              │
+    └────────────────────────────────────────────────────────────────────┘
+    
+    📊 ADVANCED OBS SETTINGS - 4K:
+    ┌────────────────────────────────────────────────────────────────────┐
+    │ Settings → Output → Streaming/Recording                            │
+    │   Video Bitrate:         25000 Kbps (25 Mbps)                       │
+    │   Audio Bitrate:         320 Kbps                                   │
+    │                                                                     │
+    │ Settings → Video                                                    │
+    │   Base Canvas:           3840x2160                                  │
+    │   Output Resolution:     3840x2160                                  │
+    │   Common FPS:            60                                         │
+    │                                                                     │
+    │ Settings → Advanced                                                 │
+    │   Color Format:          NV12 / P010                                │
+    │   Color Space:           709 / 2020                                 │
+    │   Color Range:           Full                                       │
+    └────────────────────────────────────────────────────────────────────┘
+    
+    ✨ QUALITY FEATURES:
+    • 4K Ultra HD 3840×2160 resolution
+    • Silky smooth 60 fps animation
+    • Professional Rec.709/2020 color space
+    • Maximum bitrate (25000 Kbps video + 320 Kbps audio)
+    • Dolby Atmos-style binaural audio mix
+    • Antialiased text rendering
+    • Hardware-accelerated CSS animations
+    • Real-time LLM-generated news headlines
+    • Automatic news updates every 2 minutes
+    
+    -->
+    
+    <!-- 4K Ultra HD Video Quality Meta Tags -->
+    <meta name="video-resolution" content="3840x2160">
+    <meta name="video-framerate" content="60fps">
+    <meta name="video-bitrate" content="25000kbps">
+    <meta name="audio-quality" content="48kHz AAC 320kbps Stereo">
+    <meta name="color-space" content="Rec.709/Rec.2020 Full Range">
+    <meta name="audio-codec" content="AAC LC 320kbps 48kHz Stereo">
+    <meta name="audio-description" content="Dolby Atmos-style binaural mix optimized for stereo">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Three.js extras for TextGeometry -->
+    <script src="https://threejs.org/examples/js/loaders/FontLoader.js"></script>
+    <script src="https://threejs.org/examples/js/geometries/TextGeometry.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Lottie for animated bullets -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.12.2/lottie.min.js"></script>
+    <!-- Gotham-like fallback webfonts (legal, free) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@600;800&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+    <!-- Preload persisted ticker data generated by news_collector.py (optional but preferred) -->
+    <script src="ticker_data.js" onerror="console.error('❌ CRITICAL: Failed to load ticker_data.js - run news_llm_generator.py to generate it')" onload="console.log('✅ ticker_data.js loaded successfully')"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            /* Force Full HD 1080p dimensions for OBS Browser Source */
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+        }
+
+        body {
+            /* Prefer Gotham if installed locally; fall back to Montserrat/Inter */
+            font-family: 'Gotham', 'Montserrat', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+            background: #000000;
+            width: 1920px;
+            height: 1080px;
+            overflow: hidden;
+            position: relative;
+            /* Full HD quality rendering hints */
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        /* Background Video Styles */
+        #bg-video {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -2;
+        }
+
+        /* Dim Overlay for Background Video */
+        .bg-dim-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: -1;
+            pointer-events: none;
+        }
+
+
+
+
+
+
+
+        /* Background removed - no animated circles or orbs */
+
+        /* Removed original body::after to avoid conflict with video overlay */
+
+        /* Hidden Control Panel */
+        .master-control {
+            display: none;
+        }
+
+        .master-title {
+            color: #fff;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #ff3b30, #8a2be2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .theme-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            border-left: 3px solid #ff3b30;
+        }
+
+        .theme-title {
+            color: #ff6b47;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .control-group {
+            margin-bottom: 12px;
+        }
+
+        .control-label {
+            color: #ccc;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 4px;
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .control-select, .control-textarea, .control-input {
+            width: 100%;
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 6px;
+            color: #fff;
+            font-size: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .control-textarea {
+            resize: vertical;
+            min-height: 50px;
+        }
+
+        .control-button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(135deg, #ff3b30 0%, #ff6b47 100%);
+            border: none;
+            border-radius: 6px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+
+        .control-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+        }
+
+        .control-button.purple {
+            background: linear-gradient(135deg, #8a2be2 0%, #6a1b9a 100%);
+        }
+
+        .control-button.blue {
+            background: linear-gradient(135deg, #007AFF 0%, #0056CC 100%);
+        }
+
+        /* Minimal BBC Breaking News */
+        .breaking-banner {
+            position: fixed;
+            bottom: 45px; /* Updated to sit above ticker (45px tall) */
+            left: 0;
+            width: 100%;
+            height: 130px; /* Updated from 90px to match new logo/breaking box height */
+            display: flex !important; /* Changed to flex for proper alignment */
+            flex-direction: row; /* Horizontal layout */
+            align-items: stretch; /* Make children same height */
+            z-index: 9998 !important; /* ensure banner is above everything */
+            background: none !important; /* No background */
+            background-image: none !important; /* Block any gradients */
+            opacity: 1 !important;
+        }
+
+        /* Latest Text Box */
+        .latest-section {
+            position: absolute;
+            bottom: 0;
+            left: 120px;
+            width: 120px;
+            height: 80px;
+            /* Match the solid brand red used by the logo box */
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 960; /* sit above everything in the banner */
+            box-shadow: 
+                0 0 40px rgba(220, 20, 60, 0.5),
+                0 6px 24px rgba(0, 0, 0, 0.4);
+            position: relative;
+            overflow: hidden;
+            /* enable flip animation */
+            perspective: 600px;
+            transform-style: preserve-3d;
+            animation: latestFlip 12s ease-in-out infinite;
+        }
+
+        .latest-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: lightFlash 4s ease-in-out infinite;
+            z-index: 1; /* keep below text */
+        }
+
+        /* Logo Box - 3D Cube Container */
+        .logo-section {
+            position: relative; /* Changed from absolute to relative */
+            bottom: auto; /* Reset bottom positioning */
+            left: 0;
+            width: 140px;
+            height: 130px; /* INCREASED from 90px to match breaking box */
+            /* Use solid brand red to match the logo background */
+            background: #ff0000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            /* enable 3D perspective for cube animation */
+            perspective: 800px;
+            box-shadow: 
+                0 0 40px rgba(220, 20, 60, 0.5),
+                0 6px 24px rgba(0, 0, 0, 0.4);
+            overflow: visible; /* allow 3D cube to show */
+            z-index: 9999; /* sit above everything including glare */
+            margin-top: 10px; /* Move logo down slightly */
+        }
+
+        .logo-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: lightFlash 4s ease-in-out infinite 0.5s;
+            z-index: 1; /* keep below logo */
+        }
+
+        /* 3D Cube for Logo */
+        .logo-cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 20s infinite ease-in-out;
+        }
+
+        .cube-face {
+            position: absolute;
+            width: 140px;
+            height: 90px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            background: #ff0000;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .cube-face img {
+            height: 80px;
+            width: auto;
+            filter: none;
+        }
+
+        .cube-face-front  { transform: translateZ(45px); }
+        .cube-face-back   { transform: rotateY(180deg) translateZ(45px); }
+        .cube-face-right  { transform: rotateY(90deg) translateZ(45px); }
+        .cube-face-left   { transform: rotateY(-90deg) translateZ(45px); }
+
+        .cube-face-text {
+            font-size: 28px;
+            font-weight: 900;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-family: 'Gotham', 'Montserrat', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+        }
+
+        @keyframes rotateCube {
+            0%, 20% { transform: rotateY(0deg); }
+            25%, 45% { transform: rotateY(-90deg); }
+            50%, 70% { transform: rotateY(-180deg); }
+            75%, 95% { transform: rotateY(-270deg); }
+            100% { transform: rotateY(-360deg); }
+        }
+
+        .breaking-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: lightFlash 4s ease-in-out infinite;
+        }
+
+        .latest-text {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            position: relative;
+            z-index: 2;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            backface-visibility: hidden;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: clip;
+        }
+
+        /* Old logo-wrap styles removed - now using 3D cube */
+
+        /* Flip animation for the LATEST/TRENDING box */
+        @keyframes latestFlip {
+            0%, 40% { transform: rotateY(0deg); }
+            50% { transform: rotateY(180deg); }
+            60%, 100% { transform: rotateY(360deg); }
+        }
+
+        .news-section {
+            position: relative; /* Changed from absolute to relative */
+            bottom: auto; /* Reset bottom positioning */
+            left: 140px; /* start to the right of the 140px logo */
+            width: calc(100% - 140px);
+            height: 130px; /* Increased from 110px to 130px */
+            /* Same color as logo - pure red */
+            background: #ff0000 !important; /* Pure red - same as logo cube */
+            background-image: none !important; /* Block any gradient overlays */
+            opacity: 1 !important; /* Force full opacity */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center; /* center horizontally */
+            text-align: center;  /* center text */
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3); /* Simple shadow only */
+            overflow: hidden !important; /* Keep glare and cubes INSIDE the box */
+            z-index: 9999 !important; /* Force to top to block everything behind */
+            perspective: 800px; /* Strong 3D perspective */
+            perspective-origin: center center;
+            margin-top: 10px; /* Move down to match logo */
+        }
+
+        /* 3D Glassy Long Boxes Animation Behind Text - Premium Look */
+        .glass-cube {
+            position: absolute;
+            z-index: 1;
+            transform-style: preserve-3d;
+            perspective: 1500px;
+        }
+
+        .glass-cube .cube-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .glass-cube .cube-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.08) 0%, 
+                rgba(255, 255, 255, 0.04) 50%,
+                rgba(255, 255, 255, 0.06) 100%);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 
+                0 8px 32px rgba(0, 0, 0, 0.1),
+                inset 0 0 20px rgba(255, 255, 255, 0.05);
+            backface-visibility: visible;
+            opacity: 0.25;
+        }
+        
+        /* 3D Rectangle styles */
+        .glass-rectangle {
+            position: absolute;
+            z-index: 1;
+            transform-style: preserve-3d;
+            perspective: 2000px;
+        }
+
+        .glass-rectangle .cube-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .glass-rectangle .cube-side {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, 
+                rgba(255, 255, 255, 0.12) 0%, 
+                rgba(255, 255, 255, 0.06) 50%,
+                rgba(255, 255, 255, 0.10) 100%);
+            backdrop-filter: blur(3px);
+            -webkit-backdrop-filter: blur(3px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 
+                0 4px 15px rgba(255, 255, 255, 0.08),
+                inset 0 0 10px rgba(255, 255, 255, 0.08);
+            backface-visibility: visible;
+            opacity: 0.35;
+        }
+
+        @keyframes rotateCube3D {
+            0% { transform: rotateX(0deg) rotateY(0deg) rotateZ(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg) rotateZ(360deg); }
+        }
+
+        .glass-cube-1 {
+            top: 15px; left: 8%;
+            width: 120px; height: 15px; /* Long horizontal box */
+        }
+        .glass-cube-1 .cube-inner {
+            animation: rotate3DCube1 18s infinite ease-in-out;
+        }
+
+        .glass-cube-2 {
+            top: 50px; left: 22%;
+            width: 90px; height: 18px; /* Long horizontal box */
+        }
+        .glass-cube-2 .cube-inner {
+            animation: rotate3DCube2 22s infinite ease-in-out;
+        }
+
+        .glass-cube-3 {
+            top: 80px; left: 35%;
+            width: 110px; height: 16px; /* Long horizontal box */
+        }
+        .glass-cube-3 .cube-inner {
+            animation: rotate3DCube3 20s infinite ease-in-out;
+        }
+
+        .glass-cube-4 {
+            top: 25px; left: 48%;
+            width: 100px; height: 17px; /* Long horizontal box */
+        }
+        .glass-cube-4 .cube-inner {
+            animation: rotate3DCube1 24s infinite ease-in-out;
+        }
+
+        .glass-cube-5 {
+            top: 60px; left: 58%;
+            width: 85px; height: 14px; /* Long horizontal box */
+        }
+        .glass-cube-5 .cube-inner {
+            animation: rotate3DCube2 19s infinite ease-in-out;
+        }
+
+        .glass-cube-6 {
+            top: 90px; left: 70%;
+            width: 95px; height: 16px; /* Long horizontal box */
+        }
+        .glass-cube-6 .cube-inner {
+            animation: rotate3DCube3 21s infinite ease-in-out;
+        }
+
+        .glass-cube-7 {
+            top: 40px; right: 25%;
+            width: 105px; height: 15px; /* Long horizontal box */
+        }
+        .glass-cube-7 .cube-inner {
+            animation: rotate3DCube1 23s infinite ease-in-out;
+        }
+
+        .glass-cube-8 {
+            top: 70px; right: 12%;
+            width: 115px; height: 17px; /* Long horizontal box */
+        }
+        .glass-cube-8 .cube-inner {
+            animation: rotate3DCube2 25s infinite ease-in-out;
+        }
+
+        .glass-cube-9 {
+            top: 10px; right: 5%;
+            width: 80px; height: 14px; /* Long horizontal box */
+        }
+        .glass-cube-9 .cube-inner {
+            animation: rotate3DCube3 18s infinite ease-in-out;
+        }
+
+        .glass-cube-10 {
+            top: 85px; left: 5%;
+            width: 75px; height: 16px; /* Long horizontal box */
+        }
+        .glass-cube-10 .cube-inner {
+            animation: rotate3DCube1 20s infinite ease-in-out;
+        }
+
+        .glass-cube-11 {
+            top: 35px; left: 78%;
+            width: 70px; height: 15px; /* Long horizontal box */
+        }
+        .glass-cube-11 .cube-inner {
+            animation: rotate3DCube2 22s infinite ease-in-out;
+        }
+
+        .glass-cube-12 {
+            top: 55px; right: 35%;
+            width: 90px; height: 16px; /* Long horizontal box */
+        }
+        .glass-cube-12 .cube-inner {
+            animation: rotate3DCube3 19s infinite ease-in-out;
+        }
+        
+        .glass-cube-13 {
+            top: 14px; left: 35%;
+            width: 21px; height: 21px;
+        }
+        .glass-cube-13 .cube-inner {
+            animation: rotate3DCube2 27s infinite linear;
+        }
+
+        .glass-cube-14 {
+            top: 8px; left: 65%;
+            width: 24px; height: 24px;
+        }
+        .glass-cube-14 .cube-inner {
+            animation: rotate3DCube1 29s infinite linear reverse;
+        }
+
+        .glass-cube-15 {
+            top: 22px; right: 28%;
+            width: 26px; height: 26px;
+        }
+        .glass-cube-15 .cube-inner {
+            animation: rotate3DCube3 33s infinite linear;
+        }
+
+        .glass-cube-16 {
+            top: 12px; right: 45%;
+            width: 23px; height: 23px;
+        }
+        .glass-cube-16 .cube-inner {
+            animation: rotate3DCube2 25s infinite linear reverse;
+        }
+
+        .glass-cube-17 {
+            top: 18px; left: 8%;
+            width: 22px; height: 22px;
+        }
+        .glass-cube-17 .cube-inner {
+            animation: rotate3DCube1 31s infinite linear;
+        }
+
+        .glass-cube-18 {
+            top: 6px; right: 15%;
+            width: 25px; height: 25px;
+        }
+        .glass-cube-18 .cube-inner {
+            animation: rotate3DCube3 24s infinite linear reverse;
+        }
+
+        /* 3D Rectangles */
+        .glass-rectangle-1 {
+            top: 10px; left: 22%;
+            width: 80px; height: 20px;
+        }
+        .glass-rectangle-1 .cube-inner {
+            animation: rotate3DCube1 40s infinite linear;
+        }
+
+        .glass-rectangle-2 {
+            top: 20px; right: 32%;
+            width: 100px; height: 18px;
+        }
+        .glass-rectangle-2 .cube-inner {
+            animation: rotate3DCube2 45s infinite linear reverse;
+        }
+
+        .glass-rectangle-3 {
+            top: 5px; left: 50%;
+            width: 70px; height: 22px;
+        }
+        .glass-rectangle-3 .cube-inner {
+            animation: rotate3DCube3 38s infinite linear;
+        }
+
+        .glass-rectangle-4 {
+            top: 18px; left: 15%;
+            width: 90px; height: 16px;
+        }
+        .glass-rectangle-4 .cube-inner {
+            animation: rotate3DCube1 50s infinite linear reverse;
+        }
+
+        .glass-rectangle-5 {
+            top: 12px; right: 18%;
+            width: 75px; height: 19px;
+        }
+        .glass-rectangle-5 .cube-inner {
+            animation: rotate3DCube2 42s infinite linear;
+        }
+
+        @keyframes rotate3DCube1 {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.25;
+            }
+            50% { 
+                transform: translateY(-15px) translateX(10px);
+                opacity: 0.35;
+            }
+        }
+
+        @keyframes rotate3DCube2 {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.25;
+            }
+            50% { 
+                transform: translateY(12px) translateX(-8px);
+                opacity: 0.35;
+            }
+        }
+
+        @keyframes rotate3DCube3 {
+            0%, 100% { 
+                transform: translateY(0px) translateX(0px);
+                opacity: 0.25;
+            }
+            50% { 
+                transform: translateY(-10px) translateX(-12px);
+                opacity: 0.35;
+            }
+        }
+
+        /* Yellow to Red Glare Sweep - Full Box Coverage */
+        .news-section .right-glare {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                /* Yellow to Red gradient sweep */
+                linear-gradient(90deg,
+                    transparent 0%,
+                    rgba(255, 200, 0, 0.25) 15%,
+                    rgba(255, 220, 30, 0.40) 30%,
+                    rgba(255, 180, 50, 0.50) 45%,
+                    rgba(255, 100, 50, 0.50) 55%,
+                    rgba(255, 50, 50, 0.40) 70%,
+                    rgba(220, 20, 60, 0.25) 85%,
+                    transparent 100%);
+            transform: translateX(-100%);
+            opacity: 0;
+            z-index: 50 !important;
+            pointer-events: none;
+            filter: blur(20px) saturate(1.6) brightness(1.5);
+            will-change: transform, opacity;
+            mix-blend-mode: screen;
+        }
+
+        /* Glare animates during transition only */
+        .news-section.breaking-transition .right-glare {
+            animation: yellowRedGlare 2.2s cubic-bezier(0.4, 0.0, 0.2, 1.0) forwards;
+        }
+
+        /* Yellow to Red glare sweep - full box coverage */
+        @keyframes yellowRedGlare {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+                filter: blur(20px) saturate(1.6) brightness(1.5);
+            }
+            10% { 
+                opacity: 0.85;
+                filter: blur(18px) saturate(1.7) brightness(1.6);
+            }
+            20% {
+                transform: translateX(-50%);
+                opacity: 1.0;
+            }
+            40% {
+                transform: translateX(0%);
+                opacity: 1.0;
+                filter: blur(16px) saturate(1.8) brightness(1.7);
+            }
+            60% {
+                transform: translateX(50%);
+                opacity: 1.0;
+            }
+            80% {
+                transform: translateX(100%);
+                opacity: 0.85;
+                filter: blur(18px) saturate(1.7) brightness(1.6);
+            }
+            100% {
+                transform: translateX(150%);
+                opacity: 0;
+                filter: blur(20px) saturate(1.6) brightness(1.5);
+            }
+        }
+
+        @keyframes floatCube1 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(0deg) rotateY(0deg) rotateZ(0deg);
+                opacity: 0.6;
+            }
+            25% { 
+                transform: translateY(-20px) rotateX(15deg) rotateY(45deg) rotateZ(10deg);
+                opacity: 0.8;
+            }
+            50% { 
+                transform: translateY(-10px) rotateX(-10deg) rotateY(90deg) rotateZ(20deg);
+                opacity: 0.7;
+            }
+            75% { 
+                transform: translateY(-25px) rotateX(20deg) rotateY(135deg) rotateZ(15deg);
+                opacity: 0.9;
+            }
+        }
+
+        @keyframes floatCube2 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(10deg) rotateY(20deg) rotateZ(5deg);
+                opacity: 0.5;
+            }
+            33% { 
+                transform: translateY(-15px) rotateX(-15deg) rotateY(60deg) rotateZ(-10deg);
+                opacity: 0.8;
+            }
+            66% { 
+                transform: translateY(-30px) rotateX(25deg) rotateY(120deg) rotateZ(15deg);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes floatCube3 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(-5deg) rotateY(10deg) rotateZ(-5deg);
+                opacity: 0.7;
+            }
+            40% { 
+                transform: translateY(-20px) rotateX(20deg) rotateY(80deg) rotateZ(20deg);
+                opacity: 0.9;
+            }
+            80% { 
+                transform: translateY(-35px) rotateX(-10deg) rotateY(160deg) rotateZ(-15deg);
+                opacity: 0.5;
+            }
+        }
+
+        @keyframes floatCube4 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(5deg) rotateY(-15deg) rotateZ(8deg);
+                opacity: 0.6;
+            }
+            30% { 
+                transform: translateY(-25px) rotateX(-20deg) rotateY(70deg) rotateZ(-12deg);
+                opacity: 0.8;
+            }
+            70% { 
+                transform: translateY(-18px) rotateX(15deg) rotateY(140deg) rotateZ(18deg);
+                opacity: 0.7;
+            }
+        }
+
+        @keyframes floatCube5 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(-8deg) rotateY(25deg) rotateZ(-10deg);
+                opacity: 0.65;
+            }
+            35% { 
+                transform: translateY(-22px) rotateX(18deg) rotateY(95deg) rotateZ(12deg);
+                opacity: 0.85;
+            }
+            75% { 
+                transform: translateY(-28px) rotateX(-12deg) rotateY(170deg) rotateZ(-8deg);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes floatCube6 {
+            0%, 100% { 
+                transform: translateY(0) rotateX(12deg) rotateY(-20deg) rotateZ(6deg);
+                opacity: 0.7;
+            }
+            25% { 
+                transform: translateY(-18px) rotateX(-25deg) rotateY(55deg) rotateZ(-15deg);
+                opacity: 0.9;
+            }
+            60% { 
+                transform: translateY(-32px) rotateX(8deg) rotateY(130deg) rotateZ(20deg);
+                opacity: 0.55;
+            }
+        }
+
+        .news-section::before {
+            display: none; /* Removed glare gradient effect */
+        }
+
+        @keyframes bigNewsGlare {
+            0% { left: -100%; opacity: 0; }
+            20% { opacity: 1; }
+            50% { left: 100%; opacity: 1; }
+            100% { left: 100%; opacity: 0; }
+        }
+
+        /* Enhanced transition effects when text changes - DISABLED */
+        .news-section.breaking-transition {
+            /* No animation effects */
+        }
+
+        .news-section.breaking-transition::before {
+            /* No glare effects */
+        }
+
+        @keyframes breakingPulse {
+            /* Disabled */
+        }
+
+        @keyframes bigNewsGlareFast {
+            /* Disabled */
+        }
+
+        .news-title { display: none; }
+
+        .news-content {
+            color: #ffffff;
+            font-size: clamp(28px, 3.5vw, 48px); /* BIGGER - increased from 18-32px to 28-48px */
+            font-weight: 800; /* heavier weight for better visibility */
+            max-width: 96%;
+            line-height: 1.2;
+            position: relative;
+            z-index: 100 !important; /* Text should be on TOP of glare */
+            font-family: 'Gotham', 'Montserrat', 'Inter', 'Helvetica Neue', 'Arial', sans-serif;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4); /* subtle shadow for depth */
+            white-space: nowrap; /* force single line */
+            text-transform: uppercase; /* always uppercase */
+            letter-spacing: 1.5px; /* slightly more spacing for bigger font */
+            overflow: hidden;
+            text-overflow: clip; /* NO ellipsis - hard cut if too long */
+            perspective: 1000px;
+            transform-style: preserve-3d;
+        }
+
+        /* Accent lines that appear during transitions - DISABLED */
+        .news-section::after {
+            display: none; /* No accent lines */
+        }
+
+        .news-section.breaking-transition::after {
+            display: none; /* No accent lines */
+        }
+
+        @keyframes accentLineSweep {
+            0% { 
+                opacity: 0;
+                transform: translateY(0) scaleX(0);
+            }
+            50% { 
+                opacity: 1;
+                transform: translateY(0) scaleX(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: translateY(90px) scaleX(1);
+            }
+        }
+
+        /* Transition overlays for the breaking banner */
+        .news-section .glare-sweep {
+            position: absolute;
+            top: -20%;
+            left: -25%;
+            width: 40%;
+            height: 140%;
+            background: linear-gradient(120deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.65) 50%, rgba(255,255,255,0) 100%);
+            transform: rotate(12deg);
+            filter: blur(1px);
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+            display: none; /* disabled per request */
+        }
+
+        .news-section .scanlines {
+            position: absolute;
+            inset: 0;
+            background-image: repeating-linear-gradient(
+                to bottom,
+                rgba(255,255,255,0.14) 0px,
+                rgba(255,255,255,0.14) 1px,
+                rgba(255,255,255,0) 3px,
+                rgba(255,255,255,0) 6px
+            );
+            mix-blend-mode: screen;
+            opacity: 0;
+            z-index: 1;
+            pointer-events: none;
+            display: none; /* disabled per request */
+        }
+
+        /* Three.js overlay for BIG BREAKING stinger - DISABLED */
+        .breaking-3d {
+            display: none; /* removed per request */
+        }
+
+        /* BBC Style Lower Third - Always Visible */
+        .bbc-lower-third {
+            position: fixed;
+            bottom: 140px;
+            left: 50px;
+            width: 380px;
+            display: block;
+            z-index: 800;
+            animation: slideLeftGlass 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .bbc-lt-background {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(250, 250, 250, 0.97) 100%);
+            backdrop-filter: blur(30px) saturate(160%) brightness(115%);
+            -webkit-backdrop-filter: blur(30px) saturate(160%) brightness(115%);
+            border-left: 5px solid #dc143c;
+            border-radius: 0;
+            padding: 18px 22px;
+            box-shadow: 
+                0 12px 48px rgba(0, 0, 0, 0.35),
+                0 0 60px rgba(220, 20, 60, 0.2),
+                0 0 100px rgba(220, 20, 60, 0.1),
+                inset 2px 2px 4px rgba(255, 255, 255, 0.6),
+                inset -2px -2px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid rgba(220, 20, 60, 0.1);
+            position: relative;
+            overflow: hidden;
+            transform: translateZ(0);
+            animation: ltFloat 8s ease-in-out infinite;
+        }
+
+        .bbc-lt-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.2), rgba(255, 255, 255, 0.1), transparent);
+            animation: prismaticSweep 4s ease-in-out infinite;
+        }
+
+        .bbc-lt-background::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 80% 20%, rgba(220, 20, 60, 0.05) 0%, transparent 50%);
+            animation: energyPulse 6s ease-in-out infinite;
+        }
+
+        .bbc-lt-name {
+            color: #000000;
+            font-size: 18px;
+            font-weight: 800;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .bbc-lt-title {
+            color: #555555;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Crystal Lower Third */
+        .crystal-lower-third {
+            position: absolute;
+            bottom: 140px;
+            left: 50px;
+            width: 550px;
+            display: none;
+            z-index: 400;
+        }
+
+        .crystal-lower-third.active {
+            display: block;
+            animation: slideInLeftGlow 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .crystal-lt-background {
+            background: linear-gradient(135deg, rgba(255, 59, 48, 0.9) 0%, rgba(255, 107, 71, 0.8) 100%);
+            backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px 30px;
+            box-shadow: 
+                0 20px 60px rgba(255, 59, 48, 0.3),
+                0 8px 32px rgba(0, 0, 0, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .crystal-lt-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            animation: shimmer 4s infinite;
+        }
+
+        .crystal-lt-name {
+            color: white;
+            font-size: 28px;
+            font-weight: 900;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            position: relative;
+            z-index: 2;
+        }
+
+        .crystal-lt-title {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 16px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Minimal BBC Ticker with glassmorphic touch */
+        .ticker {
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            width: 100% !important;
+            height: 45px !important;
+            background: linear-gradient(to bottom, 
+                rgba(255, 255, 255, 0.98) 0%,
+                rgba(248, 249, 250, 0.98) 100%) !important;
+            backdrop-filter: blur(16px) saturate(150%);
+            -webkit-backdrop-filter: blur(16px) saturate(150%);
+            border-top: 4px solid #ff0000;
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            z-index: 10000 !important;
+            overflow: hidden;
+            animation: fadeInMinimal 0.6s ease-out;
+            box-shadow: 
+                0 -6px 25px rgba(0, 0, 0, 0.15),
+                inset 0 1px 0 rgba(255, 255, 255, 0.8),
+                inset 0 2px 4px rgba(255, 255, 255, 0.4);
+        }
+
+        /* Fixed overlay that carries the logo box above banner & ticker */
+        .branding-overlay {
+            position: fixed;
+            bottom: 45px; /* Aligned with ticker height */
+            left: 0;
+            width: 140px; /* only logo, enlarged */
+            height: 130px; /* Updated from 110px to match new breaking box height */
+            display: flex;
+            align-items: stretch; /* Make children same height */
+            z-index: 1200; /* above everything else */
+            pointer-events: none; /* visuals only */
+        }
+
+        .ticker-label {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 140px;
+            line-height: 45px;
+            background: linear-gradient(135deg, #dc143c 0%, #b91c3c 100%);
+            color: white;
+            font-size: 11px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            z-index: 2;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            box-shadow: inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+            perspective: 600px;
+            overflow: hidden;
+        }
+
+        .ticker-label-inner {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+        }
+
+        .ticker-label.flipped .ticker-label-inner {
+            transform: rotateX(180deg);
+        }
+
+        .ticker-label-front,
+        .ticker-label-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+        }
+
+        .ticker-label-back {
+            transform: rotateX(180deg);
+        }
+
+        .ticker-label-time {
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            line-height: 1;
+        }
+
+        .ticker-content {
+            position: absolute !important;
+            left: 140px !important;
+            top: 0 !important;
+            height: 100% !important;
+            color: #1a1a1a !important;
+            font-size: 16px !important;
+            font-weight: 500 !important;
+            display: flex !important;
+            align-items: center !important;
+            line-height: 45px !important;
+            white-space: nowrap !important;
+            animation: tickerScroll 800s linear infinite !important;
+            padding-left: 0 !important;
+            font-family: 'Segoe UI', 'Arial', sans-serif !important;
+            text-shadow: none !important;
+            will-change: transform !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            backface-visibility: hidden !important;
+            -webkit-font-smoothing: antialiased !important;
+        }
+        
+        .ticker-content .ticker-headline {
+            color: #ff0000;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 17px;
+            margin-right: 10px;
+            letter-spacing: 0.6px;
+            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+        }
+        
+        .ticker-content .ticker-detail {
+            color: #1e3a5f;
+            font-weight: 500;
+            font-size: 15px;
+            font-style: normal;
+            margin-right: 6px;
+            letter-spacing: 0.4px;
+            line-height: 1.4;
+        }
+        
+        .ticker-content .lottie-bullet {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            margin: 0 12px;
+            vertical-align: middle;
+        }
+
+        /* BBC Breaking News */
+        .bbc-breaking {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background: rgba(187, 25, 25, 0.95);
+            backdrop-filter: blur(20px) saturate(180%);
+            color: white;
+            display: none;
+            z-index: 800;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px rgba(187, 25, 25, 0.4);
+        }
+
+        .bbc-breaking.active {
+            display: flex;
+            align-items: center;
+            animation: slideDownGlass 1s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        .bbc-breaking-label {
+            background: #bb1919;
+            height: 100%;
+            padding: 0 30px;
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .bbc-breaking-text {
+            flex: 1;
+            padding: 0 30px;
+            font-size: 20px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Clean Video Box */
+        .video-box {
+            position: fixed;
+            /* Center the video box and lift slightly above center */
+            top: 44%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: min(72vw, 1280px);
+            background: #000000;
+            border-radius: 16px;
+            z-index: 10000 !important; /* Above all other elements including banner */
+            display: none !important;
+            animation: slideInScale 0.8s cubic-bezier(0.25, 0.8, 0.25, 1);
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+        }
+
+        .video-box.active {
+            display: block !important;
+        }
+        
+        /* Breaking news badge for 7-sec mode */
+        .video-box.breaking-mode::before {
+            content: 'BREAKING';
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: linear-gradient(135deg, #dc143c 0%, #ff4757 100%);
+            color: white;
+            padding: 8px 16px;
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            border-radius: 4px;
+            z-index: 910;
+            box-shadow: 0 4px 12px rgba(220, 20, 60, 0.4);
+        }
+
+        .video-container {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            height: auto;
+            background: #000000;
+        }
+
+        #box-video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border-radius: 15px;
+        }
+
+        /* Animation for breaking news box */
+        @keyframes slideInScale {
+            0% {
+                transform: translate(-50%, -50%) scale(0.8);
+                opacity: 0;
+            }
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes shimmerSweep {
+            0% { left: -100%; }
+            50% { left: 0%; }
+            100% { left: 100%; }
+        }
+
+        /* Minimal Live Badge */
+        .live-badge {
+            position: fixed;
+            top: 30px;
+            right: 180px;
+            background: linear-gradient(135deg, #dc143c 0%, #b91c3c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 0;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            display: block;
+            z-index: 1000;
+            box-shadow: 
+                0 6px 24px rgba(220, 20, 60, 0.5),
+                0 0 30px rgba(220, 20, 60, 0.3),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.2);
+            animation: pulseMinimal 2s infinite, fadeInMinimal 0.6s ease-out;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Minimal Clock */
+        .clock {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(250, 250, 250, 0.97) 100%);
+            backdrop-filter: blur(20px) saturate(140%);
+            -webkit-backdrop-filter: blur(20px) saturate(140%);
+            border: none;
+            border-radius: 0;
+            padding: 8px 14px;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            color: #000000;
+            display: block;
+            z-index: 1000;
+            box-shadow: 
+                0 6px 24px rgba(0, 0, 0, 0.2),
+                0 0 30px rgba(220, 20, 60, 0.1),
+                inset 1px 1px 2px rgba(255, 255, 255, 0.4);
+            animation: fadeInMinimal 0.8s ease-out;
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        /* Enhanced 3D Headline Banner */
+        .headline-banner {
+            position: fixed;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotateX(1deg);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.99) 0%, rgba(252, 252, 252, 0.97) 100%);
+            backdrop-filter: blur(30px) saturate(140%);
+            -webkit-backdrop-filter: blur(30px) saturate(140%);
+            border-left: 5px solid #dc143c;
+            border-radius: 0;
+            padding: 28px 36px;
+            max-width: 750px;
+            min-width: 600px;
+            text-align: left;
+            display: block;
+            z-index: 900;
+            box-shadow: 
+                0 20px 60px rgba(0, 0, 0, 0.3),
+                0 0 80px rgba(220, 20, 60, 0.2),
+                0 0 120px rgba(220, 20, 60, 0.1),
+                inset 3px 3px 6px rgba(255, 255, 255, 0.4),
+                inset -2px -2px 4px rgba(0, 0, 0, 0.08);
+            animation: headlineFloat 10s ease-in-out infinite, slideInMinimal 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            border: 1px solid rgba(220, 20, 60, 0.1);
+        }
+
+        .headline-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(220, 20, 60, 0.12), rgba(255, 255, 255, 0.08), transparent);
+            animation: holographicScan 5s ease-in-out infinite 2s;
+        }
+
+        .headline-banner::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            background: linear-gradient(45deg, rgba(220, 20, 60, 0.1) 0%, transparent 25%, transparent 75%, rgba(220, 20, 60, 0.1) 100%);
+            animation: borderGlow 8s ease-in-out infinite;
+            z-index: -1;
+        }
+
+        .headline-text {
+            font-size: 26px;
+            font-weight: 800;
+            color: #000000;
+            line-height: 1.15;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            position: relative;
+            z-index: 2;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .headline-subtitle {
+            font-size: 14px;
+            color: #555555;
+            font-weight: 500;
+            letter-spacing: 0.4px;
+            line-height: 1.3;
+            font-family: 'Helvetica Neue', 'Arial', sans-serif;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Enhanced 3D Animations */
+        @keyframes slideUpMinimal {
+            from { 
+                transform: translateY(100%) rotateX(10deg); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0) rotateX(0deg); 
+                opacity: 1; 
+            }
+        }
+
+        @keyframes fadeInMinimal {
+            from { 
+                opacity: 0; 
+                transform: translateY(10px) scale(0.98); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0) scale(1); 
+            }
+        }
+
+        @keyframes slideInMinimal {
+            from { 
+                opacity: 0; 
+                transform: translate(-50%, -40%) scale(0.95) rotateX(5deg); 
+            }
+            to { 
+                opacity: 1; 
+                transform: translate(-50%, -50%) scale(1) rotateX(1deg); 
+            }
+        }
+
+        @keyframes slideLeftGlass {
+            from { 
+                transform: translateX(-100%) rotateY(-5deg); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateX(0) rotateY(0deg); 
+                opacity: 1; 
+            }
+        }
+        @keyframes tickerScroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        
+        @keyframes tickerScrollMinimal {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        @keyframes pulseMinimal {
+            0%, 100% { 
+                opacity: 1; 
+                box-shadow: 0 4px 16px rgba(220, 20, 60, 0.4); 
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.9; 
+                box-shadow: 0 8px 32px rgba(220, 20, 60, 0.6); 
+                transform: scale(1.02);
+            }
+        }
+
+        /* Advanced 3D Animations */
+        @keyframes ltFloat {
+            0%, 100% { 
+                transform: translateY(0px) rotateX(0deg); 
+            }
+            50% { 
+                transform: translateY(-2px) rotateX(0.5deg); 
+            }
+        }
+
+        @keyframes headlineFloat {
+            0%, 100% { 
+                transform: translate(-50%, -50%) rotateX(1deg) rotateY(0deg); 
+            }
+            50% { 
+                transform: translate(-50%, -50%) rotateX(0.5deg) rotateY(1deg); 
+            }
+        }
+
+        /* Holographic Effects */
+        @keyframes holographicSweep {
+            0% { 
+                transform: translateX(-100%) skewX(-15deg); 
+                opacity: 0; 
+            }
+            50% { 
+                opacity: 1; 
+            }
+            100% { 
+                transform: translateX(100%) skewX(-15deg); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes prismaticSweep {
+            0% { 
+                left: -100%; 
+                filter: hue-rotate(0deg); 
+            }
+            50% { 
+                filter: hue-rotate(30deg); 
+            }
+            100% { 
+                left: 100%; 
+                filter: hue-rotate(0deg); 
+            }
+        }
+
+        @keyframes holographicScan {
+            0% { 
+                left: -100%; 
+                filter: hue-rotate(0deg) brightness(1); 
+            }
+            25% { 
+                filter: hue-rotate(15deg) brightness(1.2); 
+            }
+            50% { 
+                filter: hue-rotate(30deg) brightness(1.1); 
+            }
+            75% { 
+                filter: hue-rotate(15deg) brightness(1.2); 
+            }
+            100% { 
+                left: 100%; 
+                filter: hue-rotate(0deg) brightness(1); 
+            }
+        }
+
+        @keyframes borderGlow {
+            0%, 100% { 
+                opacity: 0.3; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 0.6; 
+                transform: scale(1.01); 
+            }
+        }
+
+        @keyframes energyPulse {
+            0%, 100% { 
+                opacity: 0.5; 
+                transform: scale(1); 
+            }
+            50% { 
+                opacity: 0.8; 
+                transform: scale(1.05); 
+            }
+        }
+
+        /* Light Flare Animations */
+        @keyframes lightFlares {
+            0%, 100% { 
+                opacity: 0.8; 
+                filter: brightness(1) contrast(1); 
+            }
+            33% { 
+                opacity: 1; 
+                filter: brightness(1.2) contrast(1.1); 
+            }
+            66% { 
+                opacity: 0.9; 
+                filter: brightness(1.1) contrast(1.05); 
+            }
+        }
+
+        @keyframes sweepingLight {
+            0% { 
+                transform: translateX(-100%) rotate(45deg) scale(0.5); 
+                opacity: 0; 
+            }
+            10% { 
+                opacity: 0.6; 
+                transform: translateX(-50%) rotate(45deg) scale(1); 
+            }
+            90% { 
+                opacity: 0.4; 
+                transform: translateX(150%) rotate(45deg) scale(1.2); 
+            }
+            100% { 
+                transform: translateX(200%) rotate(45deg) scale(0.5); 
+                opacity: 0; 
+            }
+        }
+
+        @keyframes redGradientFlow {
+            0% { 
+                background-position: 0% 50%; 
+            }
+            25% { 
+                background-position: 100% 50%; 
+            }
+            50% { 
+                background-position: 100% 100%; 
+            }
+            75% { 
+                background-position: 50% 100%; 
+            }
+            100% { 
+                background-position: 0% 50%; 
+            }
+        }
+
+        /* Simple L-shaped corner brackets - Stays INSIDE the box */
+        .breaking-accent {
+            position: absolute;
+            width: 35px;
+            height: 35px;
+            border: 2px solid rgba(255, 255, 255, 0.65);
+            opacity: 0;
+            z-index: 10001; /* Above ticker (10000) */
+            pointer-events: none;
+        }
+
+        .breaking-accent.top-left {
+            top: 8px;
+            left: 8px;
+            border-right: none;
+            border-bottom: none;
+        }
+
+        .breaking-accent.top-right {
+            top: 8px;
+            right: 8px;
+            border-left: none;
+            border-bottom: none;
+        }
+
+        .breaking-accent.bottom-left {
+            bottom: 8px;
+            left: 8px;
+            border-right: none;
+            border-top: none;
+        }
+
+        .breaking-accent.bottom-right {
+            bottom: 8px;
+            right: 8px;
+            border-left: none;
+            border-top: none;
+        }
+
+        /* All corners use same simple fade animation - NO stagger, appear together */
+        .news-section.breaking-transition .breaking-accent {
+            animation: cornerAccent 1.0s ease-in-out;
+        }
+
+        /* Simple corner bracket animation - just fade in/out, NO movement */
+        @keyframes cornerAccent {
+            0% { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            80% { 
+                opacity: 1;
+                transform: scale(1);
+            }
+            100% { 
+                opacity: 0;
+                transform: scale(0.95);
+            }
+        }
+
+        /* Channel Logo */
+        .channel-logo {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            width: 80px;
+            height: auto;
+            opacity: 0.9;
+            transition: all 0.3s ease;
+        }
+
+        .channel-logo:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .channel-logo img {
+            width: 100%;
+            height: auto;
+            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+        }
+
+        /* Enhanced Responsive Design */
+        @media (max-width: 1200px) {
+            .headline-banner {
+                max-width: 650px;
+                min-width: 500px;
+                padding: 24px 30px;
+            }
+
+            .headline-text {
+                font-size: 24px;
+                letter-spacing: 0.6px;
+            }
+
+            .bbc-lower-third {
+                width: 350px;
+                left: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .live-badge {
+                right: 120px;
+                top: 20px;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+
+            .clock {
+                right: 20px;
+                top: 20px;
+                padding: 6px 12px;
+                font-size: 13px;
+            }
+
+            .headline-banner {
+                top: 35%;
+                max-width: 90%;
+                min-width: 350px;
+                padding: 20px 24px;
+            }
+
+            .headline-text {
+                font-size: 20px;
+                letter-spacing: 0.4px;
+                margin-bottom: 8px;
+            }
+
+            .headline-subtitle {
+                font-size: 12px;
+            }
+
+            .bbc-lower-third {
+                width: calc(100% - 80px);
+                left: 25px;
+                bottom: 120px;
+            }
+
+            .bbc-lt-background {
+                padding: 15px 18px;
+            }
+
+            .bbc-lt-name {
+                font-size: 16px;
+                letter-spacing: 0.6px;
+            }
+
+            .bbc-lt-title {
+                font-size: 10px;
+            }
+
+            .breaking-section {
+                width: 150px;
+                height: 80px;
+            }
+
+            .breaking-text {
+                font-size: 20px;
+                letter-spacing: 1.5px;
+            }
+
+            .news-section {
+                left: 0;
+                height: 80px;
+                padding-left: 40px;
+            }
+
+            .news-content {
+                font-size: 14px;
+            }
+
+            .ticker {
+                height: 28px;
+            }
+
+            .ticker-label {
+                width: 60px;
+                font-size: 10px;
+            }
+
+            .ticker-content {
+                left: 60px;
+                font-size: 11px;
+                padding-left: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .headline-banner {
+                min-width: 280px;
+                padding: 16px 20px;
+            }
+
+            .headline-text {
+                font-size: 18px;
+            }
+
+            .headline-subtitle {
+                font-size: 11px;
+            }
+
+            .bbc-lower-third {
+                width: calc(100% - 40px);
+                left: 20px;
+            }
+
+            .bbc-lt-name {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Background Video -->
+    <!-- Keep background video muted to avoid interfering with program audio -->
+    <video id="bg-video" autoplay muted loop>
+        <source src="D:\UAL\PROJECTS\PERSONAL\LIVE\BGV.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+    </video>
+    
+    <!-- Dim Overlay for Background Video -->
+    <div class="bg-dim-overlay"></div>
+
+    <!-- Master Control Panel -->
+    <div class="master-control">
+        <h3 class="master-title">Ultimate News Graphics</h3>
+        
+        <!-- Breaking News Theme -->
+        <div class="theme-section">
+            <div class="theme-title">Breaking News Theme</div>
+            
+            <div class="control-group">
+                <label class="control-label">Breaking News Text</label>
+                <textarea id="breakingText" class="control-textarea" rows="2" placeholder="Enter breaking news...">PARLIAMENT PASSES LANDMARK CLIMATE LEGISLATION • TECH GIANTS ANNOUNCE $50B AI INVESTMENT PLAN • GLOBAL MARKETS SURGE ON ECONOMIC OPTIMISM • BREAKTHROUGH MEDICAL TREATMENT APPROVED BY FDA • INTERNATIONAL SPACE STATION CELEBRATES 25TH YEAR • NEW RENEWABLE ENERGY RECORDS SET WORLDWIDE</textarea>
+            </div>
+            
+            <button class="control-button" onclick="toggleBreaking()">Toggle Breaking Banner</button>
+        </div>
+
+        <!-- BBC Theme -->
+        <div class="theme-section">
+            <div class="theme-title">BBC Style</div>
+            
+            <div class="control-group">
+                <label class="control-label">BBC Breaking News</label>
+                <textarea id="bbcBreakingText" class="control-textarea" rows="2" placeholder="BBC breaking news...">PRIME MINISTER ANNOUNCES MAJOR ECONOMIC REFORMS • SCIENTISTS ACHIEVE FUSION ENERGY BREAKTHROUGH • GLOBAL CLIMATE SUMMIT REACHES HISTORIC AGREEMENT • UNEMPLOYMENT DROPS TO LOWEST LEVEL IN DECADES • CYBER SECURITY MEASURES STRENGTHENED NATIONALLY • EDUCATION FUNDING INCREASED BY 40%</textarea>
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">BBC Name</label>
+                <input type="text" id="bbcName" class="control-input" placeholder="Person Name" value="SARAH JOHNSON">
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">BBC Title</label>
+                <input type="text" id="bbcTitle" class="control-input" placeholder="Title/Position" value="POLITICAL CORRESPONDENT">
+            </div>
+            
+            <button class="control-button blue" onclick="toggleBBCBreaking()">Toggle BBC Breaking</button>
+            <button class="control-button blue" onclick="toggleBBCLowerThird()">Toggle BBC Lower Third</button>
+        </div>
+
+        <!-- Crystal Theme -->
+        <div class="theme-section">
+            <div class="theme-title">Crystal Theme</div>
+            
+            <div class="control-group">
+                <label class="control-label">Crystal Name</label>
+                <input type="text" id="crystalName" class="control-input" placeholder="Person Name" value="ALEXANDRA WILLIAMS">
+            </div>
+            
+            <div class="control-group">
+                <label class="control-label">Crystal Title</label>
+                <input type="text" id="crystalTitle" class="control-input" placeholder="Title/Position" value="SENIOR CORRESPONDENT">
+            </div>
+            
+            <button class="control-button purple" onclick="toggleCrystalLowerThird()">Toggle Crystal Lower Third</button>
+        </div>
+
+        <!-- Universal Elements -->
+        <div class="theme-section">
+            <div class="theme-title">Universal Elements</div>
+            
+            <div class="control-group">
+                <label class="control-label">Ticker Text</label>
+                <textarea id="tickerText" class="control-textarea" rows="2" placeholder="Ticker content...">BREAKING: MAJOR INFRASTRUCTURE BILL PASSES • TECH STOCK RALLY CONTINUES • WEATHER: SEVERE STORMS EXPECTED TONIGHT • SPORTS: WORLD CUP QUALIFIERS BEGIN • HEALTH: NEW VACCINE TRIALS SHOW PROMISING RESULTS • ECONOMY: GDP GROWTH EXCEEDS EXPECTATIONS</textarea>
+            </div>
+            
+            <button class="control-button" onclick="toggleTicker()">Toggle Ticker</button>
+            <button class="control-button" onclick="toggleLive()">Toggle Live Badge</button>
+            <button class="control-button" onclick="showAdVideo()" style="background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);">Show Ad (Full)</button>
+            <button class="control-button" onclick="showBreakingVideo()" style="background: linear-gradient(135deg, #dc143c 0%, #ff4757 100%);">Breaking (7 sec)</button>
+            <button class="control-button" onclick="hideVideoBox()" style="background: linear-gradient(135deg, #333333 0%, #555555 100%);">Hide Video</button>
+        </div>
+
+        <button class="control-button" onclick="hideAll()" style="background: linear-gradient(135deg, #333 0%, #666 100%); margin-top: 15px;">Hide All Graphics</button>
+    </div>
+
+    <!-- Breaking News Banner -->
+    <div class="breaking-banner" id="breakingBanner">
+        <div class="news-section">
+            <!-- 3D Glassy Cubes floating behind text - real 3D cubes with 6 faces -->
+            <div class="glass-cube glass-cube-1">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(12.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-2">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(15px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(15px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(15px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(15px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(15px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(15px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-3">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(11px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-4">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(14px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(14px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(14px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(14px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(14px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(14px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-5">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(12px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-6">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(13px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-7">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(10px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-8">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(16px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(16px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(16px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(16px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(16px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(16px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-9">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(13.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(13.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(13.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(13.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(13.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(13.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-10">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(11.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-11">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(14.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(14.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(14.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(14.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(14.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(14.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-12">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(10.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-13">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(10.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(10.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-14">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(12px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(12px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-15">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(13px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(13px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-16">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(11.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(11.5px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-17">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(11px);"></div>
+                </div>
+            </div>
+            <div class="glass-cube glass-cube-18">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(12.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(12.5px);"></div>
+                </div>
+            </div>
+
+            <!-- 3D Long Rectangles -->
+            <div class="glass-rectangle glass-rectangle-1">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(40px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(40px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(10px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(10px);"></div>
+                </div>
+            </div>
+            <div class="glass-rectangle glass-rectangle-2">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(9px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(50px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(9px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(50px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(9px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(9px);"></div>
+                </div>
+            </div>
+            <div class="glass-rectangle glass-rectangle-3">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(35px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(35px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(11px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(11px);"></div>
+                </div>
+            </div>
+            <div class="glass-rectangle glass-rectangle-4">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(8px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(45px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(8px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(45px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(8px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(8px);"></div>
+                </div>
+            </div>
+            <div class="glass-rectangle glass-rectangle-5">
+                <div class="cube-inner">
+                    <div class="cube-side" style="transform: rotateY(0deg) translateZ(9.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(90deg) translateZ(37.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(180deg) translateZ(9.5px);"></div>
+                    <div class="cube-side" style="transform: rotateY(-90deg) translateZ(37.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(90deg) translateZ(9.5px);"></div>
+                    <div class="cube-side" style="transform: rotateX(-90deg) translateZ(9.5px);"></div>
+                </div>
+            </div>
+            
+            <!-- Sunny light glare moving left - BEHIND logo -->
+            <div class="right-glare"></div>
+            
+            <!-- Enhanced corner accents - ALL FOUR CORNERS -->
+            <div class="breaking-accent top-left"></div>
+            <div class="breaking-accent top-right"></div>
+            <div class="breaking-accent bottom-left"></div>
+            <div class="breaking-accent bottom-right"></div>
+            <div class="glare-sweep"></div>
+            <div class="scanlines"></div>
+            <div class="breaking-3d" id="breaking3D"></div>
+            <div class="news-title"></div>
+            <div class="news-content" id="breakingContent"></div>
+        </div>
+    </div>
+
+    <!-- Branding Overlay: Logo above banner & ticker -->
+    <div class="branding-overlay">
+        <div class="logo-section">
+            <div class="logo-cube">
+                <!-- Front: Logo -->
+                <div class="cube-face cube-face-front">
+                    <img src="PEN-LOGO.png" alt="Channel Logo">
+                </div>
+                <!-- Right: Logo -->
+                <div class="cube-face cube-face-right">
+                    <img src="PEN-LOGO.png" alt="Channel Logo">
+                </div>
+                <!-- Back: Logo -->
+                <div class="cube-face cube-face-back">
+                    <img src="PEN-LOGO.png" alt="Channel Logo">
+                </div>
+                <!-- Left: Logo -->
+                <div class="cube-face cube-face-left">
+                    <img src="PEN-LOGO.png" alt="Channel Logo">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- BBC Breaking News -->
+    <div class="bbc-breaking" id="bbcBreaking">
+        <div class="bbc-breaking-label">BREAKING NEWS</div>
+        <div class="bbc-breaking-text" id="bbcBreakingContent">PRIME MINISTER ANNOUNCES MAJOR ECONOMIC REFORMS IN HISTORIC SPEECH TO PARLIAMENT</div>
+    </div>
+
+    <!-- Main Ad Video Box - Plays ad01.mp4 then big break.mp4.mp4 (7s) in sequence -->
+    <div class="video-box" id="videoBox">
+        <div class="video-container">
+            <!-- Program/Ad video: WITH AUDIO enabled, source set dynamically in JavaScript -->
+            <video id="box-video" playsinline volume="1.0">
+            </video>
+        </div>
+    </div>
+
+    <!-- Crystal Lower Third -->
+    <div class="crystal-lower-third" id="crystalLowerThird">
+        <div class="crystal-lt-background">
+            <div class="crystal-lt-name" id="crystalLtName">ALEXANDRA WILLIAMS</div>
+            <div class="crystal-lt-title" id="crystalLtTitle">SENIOR CORRESPONDENT</div>
+        </div>
+    </div>
+
+    <!-- News Ticker -->
+    <div class="ticker" id="ticker">
+        <div class="ticker-label" id="tickerLabel">
+            <div class="ticker-label-inner">
+                <div class="ticker-label-front">BIG BREAKING</div>
+                <div class="ticker-label-back">
+                    <div class="ticker-label-time" id="ukTime">00:00:00</div>
+                </div>
+            </div>
+        </div>
+        <div class="ticker-content" id="tickerContent"></div>
+    </div>
+
+    <!-- Top logo removed -->
+
+    <!-- Elements removed for clean video background -->
+
+    <script>
+        // Clock removed for clean background
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'F11') {
+                e.preventDefault();
+                if (document.fullscreenElement) {
+                    document.exitFullscreen();
+                } else {
+                    document.documentElement.requestFullscreen();
+                }
+            }
+        });
+
+        // Auto-animate elements on load
+        window.addEventListener('load', function() {
+            // Elements removed for clean background
+            
+            setTimeout(() => {
+                document.getElementById('ticker').style.animationDelay = '1.5s';
+            }, 1700);
+            
+            setTimeout(() => {
+                document.getElementById('breakingBanner').style.animationDelay = '1.8s';
+            }, 2000);
+            
+            // Auto-start ad video playback on page load
+            setTimeout(() => {
+                console.log('🚀 Auto-starting video box...');
+                showAdVideo();
+            }, 2500);
+        });
+
+
+        
+        // GSAP Animations
+        function initGSAPAnimations() {
+            // Lower third animations
+            gsap.timeline({ repeat: -1, repeatDelay: 8 })
+                .from('.lower-third-enhanced', {
+                    duration: 1,
+                    x: -300,
+                    rotationY: -15,
+                    opacity: 0,
+                    ease: "power3.out"
+                })
+                .to('.lower-third-enhanced .name', {
+                    duration: 0.8,
+                    opacity: 1,
+                    y: 0,
+                    ease: "power2.out"
+                }, "+=0.2")
+                .to('.lower-third-enhanced .title', {
+                    duration: 0.8,
+                    opacity: 1,
+                    y: 0,
+                    ease: "power2.out"
+                }, "+=0.1");
+            
+            // Headline banner effects
+            gsap.timeline({ repeat: -1, repeatDelay: 12 })
+                .from('.headline-banner-3d', {
+                    duration: 1.2,
+                    scale: 0.9,
+                    rotationX: 10,
+                    opacity: 0,
+                    ease: "power2.out"
+                })
+                .to('.headline-banner-3d .headline-text', {
+                    duration: 1,
+                    opacity: 1,
+                    scale: 1,
+                    rotationX: 0,
+                    ease: "bounce.out"
+                });
+            
+            // Floating animations for continuous motion
+            gsap.to('.lower-third-enhanced', {
+                duration: 3,
+                y: "+=2",
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+            
+            gsap.to('.headline-banner-3d', {
+                duration: 5,
+                rotationX: "+=1",
+                rotationY: "+=2",
+                repeat: -1,
+                yoyo: true,
+                ease: "sine.inOut"
+            });
+        }
+        
+        // Interactive Effects
+        function addInteractiveEffects() {
+
+        }
+        
+        // Ensure BIG BREAKING text fits inside the 120px box by auto-scaling
+        function fitLatestText() {
+            const box = document.querySelector('.latest-section');
+            const textEl = document.querySelector('.latest-text');
+            if (!box || !textEl) return;
+            // Reset to measure natural width
+            textEl.style.transform = 'scale(1)';
+            textEl.style.transformOrigin = 'center center';
+            const available = Math.max(10, box.clientWidth - 10); // small margin
+            const needed = textEl.scrollWidth;
+            const scale = Math.min(1, available / (needed || 1));
+            textEl.style.transform = `scale(${scale})`;
+        }
+
+        // Flip logic for the label box: alternate between LIVE and UK time with seconds
+        function initLatestFlip() {
+            const latestSection = document.querySelector('.latest-section');
+            const latestTextEl = document.getElementById('latestText');
+            if (!latestSection || !latestTextEl) return;
+
+            let showLive = true;
+            const formatter = new Intl.DateTimeFormat('en-GB', {
+                timeZone: 'Europe/London',
+                hour: '2-digit', minute: '2-digit', second: '2-digit',
+                hour12: false
+            });
+
+            function ukTimeString() {
+                return formatter.format(new Date());
+            }
+
+            function render() {
+                latestTextEl.textContent = showLive ? 'LIVE' : ukTimeString();
+                fitLatestText();
+            }
+
+            // Update every second while in time mode
+            setInterval(() => {
+                if (!showLive) {
+                    latestTextEl.textContent = ukTimeString();
+                    fitLatestText();
+                }
+            }, 1000);
+
+            // Toggle content on each flip cycle
+            latestSection.addEventListener('animationiteration', () => {
+                showLive = !showLive;
+                render();
+            });
+
+            // Initial render
+            render();
+        }
+        
+
+        // -------------------------------
+        // Live News Ticker (RSS Aggregator) with Persistent Cache
+        // -------------------------------
+        const TICKER_CACHE_KEY = 'tickerCacheText.v1';
+        const TICKER_CACHE_TIME = 'tickerCacheTime.v1';
+
+        function getCachedTickerText() {
+            try {
+                const txt = localStorage.getItem(TICKER_CACHE_KEY);
+                return txt && txt.trim() ? txt : '';
+            } catch (_) { return ''; }
+        }
+
+        function setCachedTickerText(text) {
+            try {
+                if (text && text.trim()) {
+                    localStorage.setItem(TICKER_CACHE_KEY, text.trim());
+                    localStorage.setItem(TICKER_CACHE_TIME, Date.now().toString());
+                }
+            } catch (_) {}
+        }
+
+        // Track if ticker animation is already initialized
+        let tickerAnimationInitialized = false;
+        
+        function setTickerText(items) {
+            const ticker = document.getElementById('tickerContent');
+            if (!ticker) {
+                console.error('❌ Ticker element not found!');
+                return;
+            }
+            
+            // items is now an array of {headline, detail} objects
+            if (items && items.length > 0) {
+                // Build styled ticker content
+                const formattedItems = items.map(item => {
+                    const headline = (item.headline || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    const detail = (item.detail || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    
+                    let formatted = `<span class="ticker-headline">${headline}</span>`;
+                    if (detail) {
+                        formatted += `<span class="ticker-detail">${detail}</span>`;
+                    }
+                    return formatted;
+                }).join('&nbsp;&nbsp;&nbsp;<span style="color:#dc143c;font-size:20px;">●</span>&nbsp;&nbsp;&nbsp;');
+                
+                // Add bullet at end for seamless loop
+                const base = `${formattedItems}&nbsp;&nbsp;&nbsp;<span style="color:#dc143c;font-size:20px;">●</span>&nbsp;&nbsp;&nbsp;`;
+                
+                // Repeat 6 times for smoother infinite loop (more content = smoother scroll)
+                const repeats = 6;
+                ticker.innerHTML = new Array(repeats).fill(base).join('');
+                console.log(`✅ Ticker text set (${items.length} items, ${repeats} repeats)`);
+            } else {
+                console.warn('⚠️ Empty ticker items provided');
+            }
+            
+            // Set animation ONLY ONCE - prevent speed changes from multiple calls
+            if (!tickerAnimationInitialized) {
+                ticker.style.animation = 'none';
+                void ticker.offsetWidth; // Force reflow
+                ticker.style.animation = 'tickerScroll 800s linear infinite !important';
+                ticker.style.display = 'inline-block';
+                ticker.style.visibility = 'visible';
+                ticker.style.opacity = '1';
+                // Force smooth rendering and lock speed
+                ticker.style.backfaceVisibility = 'hidden';
+                ticker.style.webkitFontSmoothing = 'antialiased';
+                ticker.style.animationPlayState = 'running';
+                tickerAnimationInitialized = true;
+                console.log(`✅ Ticker animation initialized: 800s linear infinite (very slow for detailed content)`);
+            } else {
+                console.log(`✓ Ticker animation locked at 300s - speed consistent and maintained`);
+            }
+        }
+
+        function hydrateTickerFromCache() {
+            const cached = getCachedTickerText();
+            if (cached) {
+                try {
+                    // Try parsing as JSON first (new format)
+                    const parsedCache = JSON.parse(cached);
+                    if (Array.isArray(parsedCache)) {
+                        setTickerText(parsedCache);
+                        return;
+                    }
+                } catch(e) {}
+                // Fallback to old string format
+                setTickerText([{headline: cached, detail: ''}]);
+            }
+        }
+
+        function hydrateTickerFromPython() {
+            console.log('🔍 Checking for ticker_data.js...');
+            console.log('   window.TICKER_OBJECTS exists:', typeof window.TICKER_OBJECTS !== 'undefined');
+            console.log('   window.TICKER_TEXT exists:', typeof window.TICKER_TEXT !== 'undefined');
+            console.log('   window.TICKER_ITEMS exists:', typeof window.TICKER_ITEMS !== 'undefined');
+            console.log('   window.TICKER_UPDATED_AT:', window.TICKER_UPDATED_AT || 'not set');
+            
+            try {
+                // Priority 1: Use TICKER_OBJECTS (new format with headline/detail)
+                if (Array.isArray(window.TICKER_OBJECTS) && window.TICKER_OBJECTS.length) {
+                    console.log('✅ TICKER_OBJECTS FOUND (LLM-generated ticker items)!');
+                    console.log('   Count:', window.TICKER_OBJECTS.length, 'items');
+                    console.log('   Sample:', window.TICKER_OBJECTS.slice(0, 3));
+                    setTickerText(window.TICKER_OBJECTS);
+                    setCachedTickerText(JSON.stringify(window.TICKER_OBJECTS));
+                    return true;
+                }
+                
+                // Priority 2: Use TICKER_TEXT (old format, convert to objects)
+                if (typeof window.TICKER_TEXT === 'string' && window.TICKER_TEXT.trim()) {
+                    const text = window.TICKER_TEXT.trim();
+                    console.log('✅ TICKER_TEXT FOUND (legacy format)!');
+                    console.log('   Length:', text.length, 'characters');
+                    console.log('   Preview:', text.substring(0, 150) + '...');
+                    // Split by bullet separator and convert to objects
+                    const items = text.split('•').map(item => item.trim()).filter(Boolean);
+                    const tickerObjects = items.map(item => ({headline: item, detail: ''}));
+                    setTickerText(tickerObjects);
+                    setCachedTickerText(JSON.stringify(tickerObjects));
+                    return true;
+                }
+                
+                // Priority 3: Use TICKER_ITEMS (breaking headlines as fallback)
+                if (Array.isArray(window.TICKER_ITEMS) && window.TICKER_ITEMS.length) {
+                    console.log('✅ TICKER_ITEMS FOUND (using breaking headlines as ticker)!');
+                    console.log('   Count:', window.TICKER_ITEMS.length, 'headlines');
+                    console.log('   Sample:', window.TICKER_ITEMS.slice(0, 3));
+                    // Convert array of strings to array of objects
+                    const items = window.TICKER_ITEMS.map(item => ({headline: item, detail: ''}));
+                    setTickerText(items);
+                    setCachedTickerText(JSON.stringify(items));
+                    return true;
+                }
+            } catch (e) {
+                console.error('❌ Error in hydrateTickerFromPython:', e);
+            }
+            console.warn('⚠️ No Python ticker data found (window.TICKER_OBJECTS, TICKER_TEXT or TICKER_ITEMS)');
+            return false;
+        }
+        const RSS_FEEDS = [
+            // General / World
+            'https://feeds.bbci.co.uk/news/rss.xml',
+            'https://feeds.reuters.com/reuters/topNews',
+            'https://rss.cnn.com/rss/edition.rss',
+            'https://www.aljazeera.com/xml/rss/all.xml',
+            'https://www.theguardian.com/world/rss',
+            'https://feeds.skynews.com/feeds/rss/world.xml',
+            // AP Top News (RSS)
+            'https://apnews.com/hub/apf-topnews?output=rss',
+            // Tech (extra variety)
+            'https://www.theverge.com/rss/index.xml',
+            'https://techcrunch.com/feed/'
+        ];
+
+        async function fetchWithFallback(url) {
+            const proxies = [
+                (u) => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+                (u) => `https://r.jina.ai/http://${u.replace(/^https?:\/\//,'')}`
+            ];
+            // Try direct first
+            try {
+                const r = await fetch(url, { cache: 'no-store' });
+                if (r.ok) return await r.text();
+            } catch(e) {}
+            // Try proxies
+            for (const p of proxies) {
+                try {
+                    const r = await fetch(p(url), { cache: 'no-store' });
+                    if (r.ok) return await r.text();
+                } catch(e) {}
+            }
+            return '';
+        }
+
+        function parseRSSItems(xmlText) {
+            if (!xmlText) return [];
+            try {
+                const parser = new DOMParser();
+                const xml = parser.parseFromString(xmlText, 'text/xml');
+                
+                // Get both title and description for more detail
+                const items = [...xml.querySelectorAll('item')].map(item => {
+                    const title = item.querySelector('title')?.textContent.trim() || '';
+                    const desc = item.querySelector('description')?.textContent.trim() || '';
+                    
+                    // Format with styled HTML for better visual distinction
+                    if (desc) {
+                        // Clean HTML tags from description
+                        const cleanDesc = desc.replace(/<[^>]*>/g, '');
+                        // Extract first sentence or first 120 chars
+                        const firstSentence = cleanDesc.split(/[.!?]/)[0].trim();
+                        const detail = firstSentence.length > 120 ? firstSentence.substring(0, 120) + '...' : firstSentence;
+                        return {
+                            headline: title,
+                            detail: detail
+                        };
+                    }
+                    return {
+                        headline: title,
+                        detail: ''
+                    };
+                }).filter(item => item.headline);
+                
+                if (items.length) return items;
+                
+                // Atom fallback
+                const entries = [...xml.querySelectorAll('entry')].map(entry => {
+                    const title = entry.querySelector('title')?.textContent.trim() || '';
+                    const summary = entry.querySelector('summary')?.textContent.trim() || '';
+                    
+                    if (summary) {
+                        const cleanSummary = summary.replace(/<[^>]*>/g, '');
+                        const firstSentence = cleanSummary.split(/[.!?]/)[0].trim();
+                        const detail = firstSentence.length > 120 ? firstSentence.substring(0, 120) + '...' : firstSentence;
+                        return {
+                            headline: title,
+                            detail: detail
+                        };
+                    }
+                    return {
+                        headline: title,
+                        detail: ''
+                    };
+                }).filter(item => item.headline);
+                
+                return entries;
+            } catch (e) {
+                return [];
+            }
+        }
+
+        // Content filter - block abusive/inappropriate words
+        const BLOCKED_WORDS = [
+            'fuck', 'shit', 'damn', 'hell', 'bitch', 'bastard', 'asshole', 'crap',
+            'piss', 'dick', 'cock', 'pussy', 'slut', 'whore', 'rape', 'kill', 'murder',
+            'terrorist', 'bombing', 'suicide', 'death', 'died', 'killed', 'shooting',
+            'violence', 'attack', 'massacre', 'genocide', 'abuse', 'torture'
+        ];
+        
+        function containsBlockedContent(text) {
+            const lowerText = text.toLowerCase();
+            return BLOCKED_WORDS.some(word => {
+                const regex = new RegExp(`\\b${word}\\b`, 'i');
+                return regex.test(lowerText);
+            });
+        }
+        
+        function filterContent(text) {
+            if (containsBlockedContent(text)) {
+                console.log('⚠️ Blocked inappropriate content:', text.substring(0, 50) + '...');
+                return null;
+            }
+            return text;
+        }
+
+        async function buildTickerFromFeeds() {
+            const allItems = [];
+            const seenHeadlines = new Set();
+            
+            for (const url of RSS_FEEDS) {
+                try {
+                    const text = await fetchWithFallback(url);
+                    const items = parseRSSItems(text).slice(0, 10);
+                    items.forEach(item => {
+                        // Normalize whitespace
+                        const headline = item.headline.replace(/\s+/g, ' ').trim();
+                        const detail = item.detail.replace(/\s+/g, ' ').trim();
+                        
+                        // Filter out inappropriate content from both headline and detail
+                        if (filterContent(headline) && filterContent(detail)) {
+                            // Avoid duplicates based on headline
+                            if (!seenHeadlines.has(headline)) {
+                                seenHeadlines.add(headline);
+                                allItems.push({
+                                    headline: headline,
+                                    detail: detail
+                                });
+                            }
+                        }
+                    });
+                    if (allItems.length > 60) break; // cap to keep performance
+                } catch (e) {}
+            }
+            
+            const finalItems = allItems.slice(0, 40);
+            if (finalItems.length) {
+                setTickerText(finalItems);
+                // Cache as JSON string
+                setCachedTickerText(JSON.stringify(finalItems));
+                return;
+            }
+            // If no items fetched (offline/CORS), fall back to cache
+            const cached = getCachedTickerText();
+            if (cached) {
+                try {
+                    const parsedCache = JSON.parse(cached);
+                    if (Array.isArray(parsedCache)) {
+                        setTickerText(parsedCache);
+                        return;
+                    }
+                } catch(e) {}
+                // Fallback to old string format
+                setTickerText([{headline: cached, detail: ''}]);
+                return;
+            }
+            // As a last resort, use default text
+            setTickerText([{headline: 'LATEST NEWS • BREAKING UPDATES • LIVE COVERAGE • STAY TUNED FOR MORE', detail: ''}]);
+        }
+
+        function startTickerUpdates() {
+            console.log('🚀 Starting ticker updates...');
+            console.log('📋 MODE: Using ONLY LLM-generated ticker from ticker_data.js (NO RSS feeds)');
+            
+            // Ensure ticker element is visible
+            const tickerElement = document.getElementById('ticker');
+            if (tickerElement) {
+                tickerElement.style.display = 'block';
+                tickerElement.style.visibility = 'visible';
+                tickerElement.style.opacity = '1';
+                console.log('✓ Ticker element forced visible');
+            }
+            
+            // 1. Try Python-generated LLM data first (ticker_data.js) - PRIMARY SOURCE
+            const hadPython = hydrateTickerFromPython();
+            console.log('LLM ticker data loaded:', hadPython);
+            
+            // 2. If no Python data, try cache
+            if (!hadPython) {
+                console.log('No LLM data found, trying cache...');
+                hydrateTickerFromCache();
+            }
+            
+            // 3. Ensure ticker has content before starting (fallback to default if still empty)
+            const ticker = document.getElementById('tickerContent');
+            console.log('Ticker element:', ticker);
+            console.log('Ticker innerHTML:', ticker ? ticker.innerHTML.substring(0, 100) : 'NULL');
+            
+            if (ticker && !ticker.innerHTML.trim()) {
+                // Emergency fallback if no data loaded yet
+                console.warn('⚠️ Using emergency fallback text');
+                console.warn('⚠️ Run: python news_llm_generator.py to generate proper ticker content');
+                setTickerText([{headline: 'LATEST NEWS • BREAKING UPDATES • LIVE COVERAGE • STAY TUNED FOR MORE', detail: ''}]);
+            }
+            
+            // 4. DO NOT fetch from RSS feeds - use ONLY LLM-generated content
+            // To update ticker: run news_llm_generator.py, then refresh this page
+            console.log('✅ Ticker initialized with LLM content');
+            console.log('💡 To update: run "python news_llm_generator.py" and refresh the page');
+            console.log('🚫 RSS feed fetching DISABLED - using LLM-generated content only');
+        }
+
+        // -------------------------------
+        // Breaking Bar: Live Headlines Rotator (centered)
+        // -------------------------------
+    let BREAKING_ITEMS = [];
+    let breakingIndex = 0;
+    let breakingTimerId = null;
+
+        async function buildBreakingFromFeeds() {
+            const allTitles = new Set();
+            // Prefer the same feeds used by ticker
+            const feeds = Array.isArray(RSS_FEEDS) && RSS_FEEDS.length ? RSS_FEEDS : [
+                'https://feeds.bbci.co.uk/news/rss.xml',
+                'https://www.reuters.com/rssFeed/topNews',
+                'https://apnews.com/hub/apf-topnews?output=rss',
+                'https://www.aljazeera.com/xml/rss/all.xml'
+            ];
+            for (const url of feeds) {
+                try {
+                    const text = await fetchWithFallback(url);
+                    const titles = parseRSSItems(text).slice(0, 10);
+                    titles.forEach(t => allTitles.add(t.replace(/\s+/g, ' ').trim()));
+                    if (allTitles.size > 30) break;
+                } catch (e) {}
+            }
+            const items = Array.from(allTitles).slice(0, 20);
+            // Filter for SHORT headlines that fit on ONE line (max 65 chars)
+            const filtered = items.filter(t => t && t.length >= 25 && t.length <= 65);
+            return filtered.length ? filtered : items.filter(t => t && t.length <= 65).slice(0, 12);
+        }
+
+        // Array of different transition styles for variety - WITH FLARE SYNC
+        let currentTransitionIndex = 0;
+        const transitionStyles = [
+            // Style 1: Scale + Fade + Brightness (syncs with flare)
+            function(el, nextText) {
+                const tl = gsap.timeline();
+                tl.to(el, { 
+                    duration: 0.35, 
+                    scale: 0.85, 
+                    opacity: 0, 
+                    ease: 'power2.in',
+                    filter: 'blur(8px) brightness(0.5)'
+                })
+                .add(() => { el.textContent = (nextText || '').toUpperCase(); })
+                .fromTo(el, 
+                    { scale: 1.15, opacity: 0, filter: 'blur(8px) brightness(3)' },
+                    { 
+                        duration: 0.6, 
+                        scale: 1, 
+                        opacity: 1, 
+                        filter: 'blur(0px) brightness(1)',
+                        ease: 'back.out(1.5)' 
+                    }
+                );
+            },
+            // Style 2: Slide from sides
+            function(el, nextText) {
+                const direction = Math.random() > 0.5 ? 100 : -100;
+                const tl = gsap.timeline();
+                tl.to(el, { 
+                    duration: 0.3, 
+                    x: -direction, 
+                    opacity: 0, 
+                    ease: 'power2.in' 
+                })
+                .add(() => { el.textContent = (nextText || '').toUpperCase(); })
+                .fromTo(el,
+                    { x: direction, opacity: 0 },
+                    { 
+                        duration: 0.45, 
+                        x: 0, 
+                        opacity: 1, 
+                        ease: 'power2.out' 
+                    }
+                );
+            },
+            // Style 3: 3D Flip
+            function(el, nextText) {
+                const tl = gsap.timeline();
+                tl.to(el, { 
+                    duration: 0.35, 
+                    rotationY: 90, 
+                    opacity: 0, 
+                    ease: 'power2.in' 
+                })
+                .add(() => { el.textContent = (nextText || '').toUpperCase(); })
+                .fromTo(el,
+                    { rotationY: -90, opacity: 0 },
+                    { 
+                        duration: 0.45, 
+                        rotationY: 0, 
+                        opacity: 1, 
+                        ease: 'power2.out' 
+                    }
+                );
+            },
+            // Style 4: Vertical slide with scale
+            function(el, nextText) {
+                const tl = gsap.timeline();
+                tl.to(el, { 
+                    duration: 0.3, 
+                    y: -30, 
+                    scale: 0.9,
+                    opacity: 0, 
+                    ease: 'power2.in' 
+                })
+                .add(() => { el.textContent = (nextText || '').toUpperCase(); })
+                .fromTo(el,
+                    { y: 30, scale: 0.9, opacity: 0 },
+                    { 
+                        duration: 0.5, 
+                        y: 0,
+                        scale: 1, 
+                        opacity: 1, 
+                        ease: 'back.out(1.3)' 
+                    }
+                );
+            },
+            // Style 5: Elastic bounce
+            function(el, nextText) {
+                const tl = gsap.timeline();
+                tl.to(el, { 
+                    duration: 0.25, 
+                    scale: 0, 
+                    opacity: 0, 
+                    ease: 'power2.in' 
+                })
+                .add(() => { el.textContent = (nextText || '').toUpperCase(); })
+                .fromTo(el,
+                    { scale: 0, opacity: 0 },
+                    { 
+                        duration: 0.6, 
+                        scale: 1, 
+                        opacity: 1, 
+                        ease: 'elastic.out(1, 0.5)' 
+                    }
+                );
+            }
+        ];
+
+        function setBreakingTextAnimated(nextText) {
+            const el = document.getElementById('breakingContent');
+            const container = document.querySelector('.news-section');
+            if (!el) return;
+
+            // Trigger glare effect and corner accents on the container
+            if (container && container.classList) {
+                container.classList.remove('breaking-transition');
+                void container.offsetWidth; // Force reflow
+                container.classList.add('breaking-transition');
+                setTimeout(() => container.classList.remove('breaking-transition'), 2700); // Match 2.6s animation duration
+            }
+
+            // Cycle through different transition styles
+            const transitionFunc = transitionStyles[currentTransitionIndex];
+            currentTransitionIndex = (currentTransitionIndex + 1) % transitionStyles.length;
+            
+            transitionFunc(el, nextText);
+        }
+
+        function rotateBreaking() {
+            if (!BREAKING_ITEMS.length) return;
+            breakingIndex = (breakingIndex + 1) % BREAKING_ITEMS.length;
+            console.log(`🔄 Breaking news rotating (every 4s) - Item ${breakingIndex + 1}/${BREAKING_ITEMS.length}`);
+            setBreakingTextAnimated(BREAKING_ITEMS[breakingIndex]);
+        }
+
+        async function startBreakingUpdates() {
+            console.log('🔄 Starting breaking news updates...');
+            
+            // 1) Seed immediately from local sources (no network) to avoid empty/placeholder text
+            try {
+                if (!BREAKING_ITEMS.length && Array.isArray(window.TICKER_ITEMS) && window.TICKER_ITEMS.length) {
+                    // Filter to SHORT items only (max 45 chars for single line display - even shorter!)
+                    BREAKING_ITEMS = window.TICKER_ITEMS.filter(t => t && t.length <= 45).slice(0, 15);
+                    console.log('✓ Loaded', BREAKING_ITEMS.length, 'breaking items from ticker_data.js');
+                    console.log('✓ Sample headlines:', BREAKING_ITEMS.slice(0, 3));
+                }
+            } catch (e) {
+                console.error('❌ Error loading TICKER_ITEMS:', e);
+            }
+            
+            if (!BREAKING_ITEMS.length) {
+                const cached = getCachedTickerText();
+                if (cached) {
+                    const items = cached.split('•').map(s => s.trim()).filter(Boolean);
+                    BREAKING_ITEMS = items.filter(t => t && t.length <= 65).slice(0, 12);
+                    console.log('✓ Loaded', BREAKING_ITEMS.length, 'breaking items from cache');
+                }
+            }
+            
+            // Emergency fallback
+            if (!BREAKING_ITEMS.length) {
+                BREAKING_ITEMS = [
+                    'BREAKING NEWS: LIVE UPDATES',
+                    'DEVELOPING STORY: STAY TUNED',
+                    'LATEST NEWS HEADLINES COMING SOON'
+                ];
+                console.warn('⚠️ Using fallback breaking text (ticker_data.js may not be loaded)');
+            }
+            
+            // Show first item immediately with forced visibility
+            const breakingEl = document.getElementById('breakingContent');
+            if (BREAKING_ITEMS.length && breakingEl) {
+                breakingEl.textContent = BREAKING_ITEMS[0].toUpperCase();
+                breakingEl.style.display = 'block';
+                breakingEl.style.visibility = 'visible';
+                breakingEl.style.opacity = '1';
+                breakingIndex = 0;
+                console.log('✅ DISPLAYING FIRST BREAKING ITEM:', BREAKING_ITEMS[0]);
+                console.log('   Element visible:', window.getComputedStyle(breakingEl).visibility);
+                console.log('   Element display:', window.getComputedStyle(breakingEl).display);
+                console.log('   Element opacity:', window.getComputedStyle(breakingEl).opacity);
+            } else {
+                console.error('❌ Breaking content element not found or no items!');
+            }
+
+            // 2) DISABLED - Do NOT fetch live items, use only ticker_data.js for consistent short headlines
+            // try {
+            //     const liveItems = await buildBreakingFromFeeds();
+            //     if (liveItems && liveItems.length) {
+            //         BREAKING_ITEMS = liveItems;
+            //         // If we had nothing on screen yet, show the first item with animation
+            //         if (!document.getElementById('breakingContent').textContent) {
+            //             setBreakingTextAnimated(BREAKING_ITEMS[0]);
+            //             breakingIndex = 0;
+            //         }
+            //     }
+            // } catch (_) {}
+            console.log('✓ Using ONLY ticker_data.js headlines (no live feeds)');
+
+            // 3) Start rotation if we have at least one item
+            if (BREAKING_ITEMS.length && !breakingTimerId) {
+                // Display first item immediately with animation
+                setBreakingTextAnimated(BREAKING_ITEMS[0]);
+                breakingIndex = 0;
+                console.log('🎬 Starting rotation timer - every 4 seconds');
+                // Then start rotating every 4 seconds
+                breakingTimerId = setInterval(rotateBreaking, 4000); // Changed from 7000ms to 4000ms (4 seconds)
+            }
+
+            // 4) DISABLED - Do NOT refresh from feeds, keep using ticker_data.js
+            // setInterval(async () => {
+            //     try {
+            //         const fresh = await buildBreakingFromFeeds();
+            //         if (fresh && fresh.length) {
+            //             BREAKING_ITEMS = fresh;
+            //             breakingIndex = -1; // next rotate will show first fresh item
+            //             if (!breakingTimerId && BREAKING_ITEMS.length) {
+            //                 breakingTimerId = setInterval(rotateBreaking, 4000); // Changed from 7000ms to 4000ms (4 seconds)
+            //             }
+            //         }
+            //     } catch(_){}
+            // }, 180000);
+            console.log('✓ Background refresh disabled - using static ticker_data.js');
+        }
+
+        
+        // Box Video management with sequential playback and state persistence
+        // Sequence: ad01.mp4 → big break (7s) → loop back to ad01
+        let isPlayingBigBreak = false;
+        
+        // Save video state periodically
+        function saveVideoState(video, state) {
+            try {
+                const videoState = {
+                    currentTime: video.currentTime,
+                    state: state,
+                    timestamp: Date.now()
+                };
+                localStorage.setItem('videoState', JSON.stringify(videoState));
+                console.log(`💾 SAVED: ${state} @ ${video.currentTime.toFixed(2)}s [${new Date().toLocaleTimeString()}]`);
+            } catch (e) {
+                console.error('❌ Could not save video state:', e);
+            }
+        }
+        
+        // Restore video state after refresh
+        function restoreVideoState(video) {
+            console.log('═══════════════════════════════════════');
+            console.log('🔍 RESTORE VIDEO STATE - DEBUG START');
+            console.log('═══════════════════════════════════════');
+            
+            try {
+                const saved = localStorage.getItem('videoState');
+                console.log('📦 localStorage.getItem("videoState"):', saved);
+                
+                if (!saved) {
+                    console.log('❌ No saved state found in localStorage');
+                    console.log('═══════════════════════════════════════\n');
+                    return false;
+                }
+                
+                const state = JSON.parse(saved);
+                console.log('📊 Parsed state object:', JSON.stringify(state, null, 2));
+                
+                const now = Date.now();
+                const elapsed = now - state.timestamp;
+                console.log(`⏱️ Time check:`);
+                console.log(`   - Now: ${now}`);
+                console.log(`   - Saved timestamp: ${state.timestamp}`);
+                console.log(`   - Elapsed: ${elapsed}ms (${(elapsed/1000).toFixed(2)}s)`);
+                console.log(`   - Within 30s window: ${elapsed < 30000}`);
+                
+                // If refresh happened less than 30 seconds ago, restore position
+                if (elapsed < 30000) {
+                    const newTime = state.currentTime + (elapsed / 1000);
+                    console.log(`📈 Time calculation:`);
+                    console.log(`   - Saved currentTime: ${state.currentTime.toFixed(2)}s`);
+                    console.log(`   - Elapsed: ${(elapsed/1000).toFixed(2)}s`);
+                    console.log(`   - New calculated time: ${newTime.toFixed(2)}s`);
+                    
+                    console.log(`🎬 Video state: "${state.state}"`);
+                    
+                    if (state.state === 'bigbreak') {
+                        console.log('📺 Restoring BIG BREAK video');
+                        isPlayingBigBreak = true;
+                        const path = 'D:\\UAL\\PROJECTS\\PERSONAL\\LIVE\\big break.mp4.mp4';
+                        console.log(`   - Setting src: ${path}`);
+                        video.src = path;
+                        console.log('   - Calling video.load()');
+                        video.load();
+                        
+                        video.addEventListener('loadedmetadata', () => {
+                            console.log('🎯 loadedmetadata event fired for big break');
+                            console.log(`   - Video duration: ${video.duration}s`);
+                            const targetTime = Math.min(newTime, 7);
+                            console.log(`   - Target time (min of ${newTime.toFixed(2)}s and 7s): ${targetTime.toFixed(2)}s`);
+                            video.currentTime = targetTime;
+                            console.log(`   - currentTime set to: ${video.currentTime}s`);
+                            console.log('   - Calling video.play()');
+                            video.play().then(() => {
+                                console.log('✅ Big break video playing successfully');
+                            }).catch(err => {
+                                console.error('❌ Big break play() failed:', err);
+                            });
+                        }, { once: true });
+                        
+                        console.log('═══════════════════════════════════════\n');
+                        return true;
+                    } else {
+                        console.log('📺 Restoring AD video');
+                        const path = 'D:\\UAL\\PROJECTS\\PERSONAL\\LIVE\\ad01.mp4';
+                        console.log(`   - Setting src: ${path}`);
+                        video.src = path;
+                        console.log('   - Calling video.load()');
+                        video.load();
+                        
+                        video.addEventListener('loadedmetadata', () => {
+                            console.log('🎯 loadedmetadata event fired for ad');
+                            const duration = video.duration;
+                            console.log(`   - Video duration: ${duration}s`);
+                            const targetTime = newTime % duration;
+                            console.log(`   - Target time (${newTime.toFixed(2)}s % ${duration.toFixed(2)}s): ${targetTime.toFixed(2)}s`);
+                            video.currentTime = targetTime;
+                            console.log(`   - currentTime set to: ${video.currentTime}s`);
+                            console.log('   - Calling video.play()');
+                            video.play().then(() => {
+                                console.log('✅ Ad video playing successfully');
+                            }).catch(err => {
+                                console.error('❌ Ad play() failed:', err);
+                            });
+                        }, { once: true });
+                        
+                        console.log('═══════════════════════════════════════\n');
+                        return true;
+                    }
+                } else {
+                    console.log(`⏭️ Refresh gap too large: ${(elapsed/1000).toFixed(1)}s > 30s`);
+                    console.log('   - Clearing old state and starting fresh');
+                    localStorage.removeItem('videoState');
+                    console.log('═══════════════════════════════════════\n');
+                }
+            } catch (e) {
+                console.error('💥 ERROR in restoreVideoState:', e);
+                console.error('Stack trace:', e.stack);
+                console.log('═══════════════════════════════════════\n');
+            }
+            return false;
+        }
+        
+        function initVideo() {
+            console.log('\n🎥 ═══════════════════════════════════════');
+            console.log('🎥 INIT VIDEO - START');
+            console.log('🎥 ═══════════════════════════════════════');
+            
+            const boxVideo = document.getElementById('box-video');
+            console.log('📺 Video element:', boxVideo);
+            
+            // Initialize box video
+            if (boxVideo) {
+                console.log('✅ Video element found, initializing...');
+                boxVideo.volume = 1.0;
+                boxVideo.muted = false;
+                boxVideo.autoplay = true;
+                boxVideo.loop = false; // Disable loop for sequential playback
+                console.log(`   - volume: ${boxVideo.volume}`);
+                console.log(`   - muted: ${boxVideo.muted}`);
+                console.log(`   - autoplay: ${boxVideo.autoplay}`);
+                console.log(`   - loop: ${boxVideo.loop}`);
+                
+                // Try to restore position after refresh
+                console.log('\n🔄 Attempting to restore video state...');
+                const restored = restoreVideoState(boxVideo);
+                console.log(`🔄 Restoration result: ${restored}`);
+                
+                // If not restored, start from beginning with first ad from playlist
+                if (!restored) {
+                    console.log('\n🎬 No restoration - Starting fresh with ad playlist');
+                    if (AD_PLAYLIST && AD_PLAYLIST.length > 0) {
+                        boxVideo.src = AD_PLAYLIST[0];
+                        console.log(`   - src set to: ${boxVideo.src}`);
+                    } else {
+                        // Fallback to old ad if playlist not available
+                        boxVideo.src = 'D:\\UAL\\PROJECTS\\PERSONAL\\LIVE\\ad01.mp4';
+                        console.log(`   - src set to fallback: ${boxVideo.src}`);
+                    }
+                    boxVideo.load();
+                    console.log('   - video.load() called');
+                    const tryPlay = () => {
+                        console.log('   - Attempting play...');
+                        boxVideo.play()
+                            .then(() => console.log('   ✅ Play successful'))
+                            .catch((err) => {
+                                console.log(`   ⚠️ Play failed, retrying in 300ms... (${err.message})`);
+                                setTimeout(tryPlay, 300);
+                            });
+                    };
+                    tryPlay();
+                }
+                
+                console.log('🎥 ═══════════════════════════════════════\n');
+                
+                // Save state every 2 seconds
+                setInterval(() => {
+                    if (!boxVideo.paused) {
+                        saveVideoState(boxVideo, isPlayingBigBreak ? 'bigbreak' : 'ad');
+                    }
+                }, 2000);
+                
+                // Video sequence handler
+                boxVideo.addEventListener('ended', () => {
+                    if (!isPlayingBigBreak) {
+                        // Ad finished → play big break for 7 seconds
+                        isPlayingBigBreak = true;
+                        console.log('Ad finished - playing big break video for 7 seconds');
+                        boxVideo.src = 'D:\\UAL\\PROJECTS\\PERSONAL\\LIVE\\big break.mp4.mp4';
+                        boxVideo.load();
+                        boxVideo.play();
+                        saveVideoState(boxVideo, 'bigbreak');
+                        
+                        // After 7 seconds, return to ad and loop
+                        setTimeout(() => {
+                            console.log('Big break finished - returning to ad video');
+                            isPlayingBigBreak = false;
+                            boxVideo.src = 'D:\\UAL\\PROJECTS\\PERSONAL\\LIVE\\ad01.mp4';
+                            boxVideo.load();
+                            boxVideo.play();
+                            saveVideoState(boxVideo, 'ad');
+                        }, 7000);
+                    }
+                });
+                
+                // Click to unmute functionality
+                boxVideo.addEventListener('click', () => {
+                    if (boxVideo.muted) {
+                        boxVideo.muted = false;
+                        console.log('Video unmuted - audio enabled');
+                    } else {
+                        boxVideo.muted = true;
+                        console.log('Video muted - audio disabled');
+                    }
+                });
+                
+                // Ensure playback continues when the box becomes visible
+                boxVideo.addEventListener('loadeddata', () => {
+                    if (document.getElementById('videoBox').classList.contains('active')) {
+                        try {
+                            boxVideo.play();
+                        } catch (e) {}
+                    }
+                });
+                
+                // Ensure video loops properly
+                boxVideo.addEventListener('ended', () => {
+                    boxVideo.currentTime = 0;
+                    boxVideo.play();
+                });
+            }
+        }
+
+        // Video Box Control - dual mode: AD or BREAKING
+        let videoBoxTimer = null;
+        
+        // Ad video playlist from AD FILMS folder - all videos play completely
+        const AD_PLAYLIST = [
+            { path: 'videos/AD FILMS/big break.mp4.mp4', duration: null, actualDuration: null },
+            { path: 'videos/AD FILMS/Big on Fresh Berries TV Advert  Lidl GB.mp4', duration: null, actualDuration: null },
+            { path: 'videos/AD FILMS/Gems - Museum.mp4', duration: null, actualDuration: null },
+            { path: 'videos/AD FILMS/Samsung fold.mp4', duration: null, actualDuration: null },
+            { path: 'videos/AD FILMS/Samsung tv.mp4', duration: null, actualDuration: null },
+            { path: 'videos/AD FILMS/Self Control Who I McDonald s.mp4', duration: null, actualDuration: null }
+        ];
+        
+        let currentAdIndex = 0;
+        
+        // Calculate total playlist duration (will be updated after videos load)
+        let TOTAL_PLAYLIST_DURATION = 180; // Initial estimate for 6 videos
+        
+        function playNextAdSimple() {
+            const videoBox = document.getElementById('videoBox');
+            const boxVideo = document.getElementById('box-video');
+            
+            if (!videoBox || !boxVideo) return;
+            
+            // Loop back to start if at end
+            if (currentAdIndex >= AD_PLAYLIST.length) {
+                currentAdIndex = 0;
+            }
+            
+            const ad = AD_PLAYLIST[currentAdIndex];
+            console.log(`▶️ Playing ad ${currentAdIndex + 1}/${AD_PLAYLIST.length}: ${ad.path}`);
+            
+            boxVideo.src = ad.path;
+            boxVideo.muted = false;
+            boxVideo.volume = 1.0;
+            boxVideo.loop = false;
+            
+            // Special handling for big break video - cut at 7 seconds
+            const isBigBreak = ad.path.includes('big break');
+            const isSamsungFold = ad.path.includes('Samsung fold');
+            
+            // Use preload to reduce gap
+            boxVideo.preload = 'auto';
+            
+            boxVideo.addEventListener('loadedmetadata', () => {
+                // Samsung fold starts from 2 seconds
+                if (isSamsungFold) {
+                    boxVideo.currentTime = 2;
+                    console.log('⏩ Samsung fold - starting from 2 seconds');
+                }
+                
+                boxVideo.play().catch(error => {
+                    console.log('Video play blocked:', error);
+                });
+                
+                if (isBigBreak) {
+                    console.log('⏱️ Big break video - will cut at 7 seconds');
+                    
+                    // Monitor and cut at 7 seconds
+                    const checkTime = setInterval(() => {
+                        if (boxVideo.currentTime >= 7) {
+                            clearInterval(checkTime);
+                            console.log('✂️ Cutting big break at 7 seconds');
+                            currentAdIndex++;
+                            playNextAdSimple();
+                        }
+                    }, 100);
+                    
+                    // Cleanup
+                    boxVideo.addEventListener('pause', () => clearInterval(checkTime), { once: true });
+                }
+            }, { once: true });
+            
+            // For non-big-break videos, advance on end
+            if (!isBigBreak) {
+                boxVideo.onended = () => {
+                    currentAdIndex++;
+                    playNextAdSimple();
+                };
+            }
+            
+            // Start loading immediately to reduce gap
+            boxVideo.load();
+        }
+        
+        // Alias for compatibility
+        function playNextAd() {
+            playNextAdSimple();
+        }
+        
+        function showAdVideo() {
+            console.log('🎬 showAdVideo() called');
+            const videoBox = document.getElementById('videoBox');
+            const boxVideo = document.getElementById('box-video');
+            
+            console.log('videoBox element:', videoBox);
+            console.log('boxVideo element:', boxVideo);
+            
+            if (videoBox && boxVideo) {
+                console.log('✅ Elements found');
+                
+                // Clear any existing timer
+                if (videoBoxTimer) {
+                    clearTimeout(videoBoxTimer);
+                    videoBoxTimer = null;
+                }
+                
+                // Remove breaking mode styling
+                videoBox.classList.remove('breaking-mode');
+                
+                // Show video box
+                videoBox.classList.add('active');
+                console.log('✅ Added active class');
+                console.log('Current classes:', videoBox.className);
+                console.log('Computed display:', window.getComputedStyle(videoBox).display);
+                
+                // Start playing ads sequentially
+                currentAdIndex = 0; // Reset to first video
+                playNextAdSimple();
+            } else {
+                console.error('❌ Elements not found!');
+            }
+        }
+        
+        function showBreakingVideo() {
+            const videoBox = document.getElementById('videoBox');
+            const boxVideo = document.getElementById('box-video');
+            
+            if (videoBox && boxVideo) {
+                // Clear any existing timer
+                if (videoBoxTimer) {
+                    clearTimeout(videoBoxTimer);
+                    videoBoxTimer = null;
+                }
+                
+                // Add breaking mode styling (shows BREAKING badge)
+                videoBox.classList.add('breaking-mode');
+                
+                // Show video box
+                videoBox.classList.add('active');
+                
+                // Play video with audio
+                boxVideo.muted = false;
+                boxVideo.volume = 1.0;
+                boxVideo.play().catch(error => {
+                    console.log('Video play blocked:', error);
+                });
+                
+                // Auto-hide after 7 seconds for breaking news
+                videoBoxTimer = setTimeout(() => {
+                    videoBox.classList.remove('active');
+                    videoBox.classList.remove('breaking-mode');
+                    boxVideo.pause();
+                }, 7000);
+            }
+        }
+        
+        function hideVideoBox() {
+            const videoBox = document.getElementById('videoBox');
+            const boxVideo = document.getElementById('box-video');
+            
+            if (videoBox) {
+                videoBox.classList.remove('active');
+                videoBox.classList.remove('breaking-mode');
+                
+                if (boxVideo) {
+                    boxVideo.pause();
+                }
+                
+                // Clear timer
+                if (videoBoxTimer) {
+                    clearTimeout(videoBoxTimer);
+                    videoBoxTimer = null;
+                }
+            }
+        }
+        
+        // Legacy function for backward compatibility
+        function toggleBreakingBox() {
+            const videoBox = document.getElementById('videoBox');
+            if (videoBox && videoBox.classList.contains('active')) {
+                hideVideoBox();
+            } else {
+                showBreakingVideo(); // Default to breaking mode
+            }
+        }
+
+        // Update breaking news content
+        function updateBreakingNews() {
+            const headline = document.getElementById('breakingText').value;
+            const breakingHeadline = document.getElementById('breakingNewsHeadline');
+            if (breakingHeadline && headline) {
+                breakingHeadline.textContent = headline;
+            }
+        }
+
+        // -------------------------------
+        // Three.js "BIG BREAKING" Stinger
+        // -------------------------------
+        let _breaking3D = {
+            container: null,
+            renderer: null,
+            scene: null,
+            camera: null,
+            font: null,
+            mesh: null,
+            active: false,
+            raf: 0
+        };
+
+        function initBreaking3D() {
+            const container = document.getElementById('breaking3D');
+            if (!container || !window.THREE) return;
+            _breaking3D.container = container;
+            const w = container.clientWidth || 800;
+            const h = container.clientHeight || 90;
+            try {
+                const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+                renderer.setSize(w, h);
+                container.appendChild(renderer.domElement);
+                _breaking3D.renderer = renderer;
+
+                const scene = new THREE.Scene();
+                _breaking3D.scene = scene;
+
+                const camera = new THREE.PerspectiveCamera(35, w / h, 0.1, 100);
+                camera.position.set(0, 0, 22);
+                _breaking3D.camera = camera;
+
+                // Lights
+                scene.add(new THREE.AmbientLight(0xffffff, 0.85));
+                const dir1 = new THREE.DirectionalLight(0xffffff, 0.9);
+                dir1.position.set(3, 4, 6);
+                scene.add(dir1);
+                const dir2 = new THREE.DirectionalLight(0xff4444, 0.5);
+                dir2.position.set(-3, -2, 5);
+                scene.add(dir2);
+
+                // Load font
+                if (THREE.FontLoader) {
+                    const loader = new THREE.FontLoader();
+                    loader.load(
+                        'https://threejs.org/examples/fonts/helvetiker_bold.typeface.json',
+                        (font) => { _breaking3D.font = font; },
+                        undefined,
+                        () => { /* ignore font load errors, will skip stinger */ }
+                    );
+                }
+
+                // Resize handling
+                window.addEventListener('resize', () => {
+                    const w2 = container.clientWidth || 800;
+                    const h2 = container.clientHeight || 90;
+                    if (!renderer) return;
+                    renderer.setSize(w2, h2);
+                    if (_breaking3D.camera) {
+                        _breaking3D.camera.aspect = w2 / h2;
+                        _breaking3D.camera.updateProjectionMatrix();
+                    }
+                });
+
+            } catch (_) {
+                // WebGL not available or failed, ignore
+            }
+        }
+
+        function _createBreakingMesh() {
+            if (!_breaking3D.font || !_breaking3D.scene) return null;
+            const geo = new THREE.TextGeometry('BIG BREAKING', {
+                font: _breaking3D.font,
+                size: 3.1,
+                height: 0.7,
+                curveSegments: 8,
+                bevelEnabled: true,
+                bevelThickness: 0.15,
+                bevelSize: 0.12,
+                bevelSegments: 3
+            });
+            geo.computeBoundingBox();
+            const bb = geo.boundingBox;
+            const xOffset = (bb.max.x - bb.min.x) / 2;
+            const yOffset = (bb.max.y - bb.min.y) / 2;
+            geo.translate(-xOffset, -yOffset, 0);
+
+            const mat = new THREE.MeshPhongMaterial({
+                color: 0xffffff,
+                specular: 0xff8888,
+                shininess: 90,
+                emissive: 0x7a0000,
+                emissiveIntensity: 0.8,
+                transparent: true,
+                opacity: 0
+            });
+            const mesh = new THREE.Mesh(geo, mat);
+            _breaking3D.scene.add(mesh);
+            return mesh;
+        }
+
+        function _renderBreaking() {
+            if (!_breaking3D.active) return;
+            _breaking3D.raf = requestAnimationFrame(_renderBreaking);
+            if (_breaking3D.mesh) {
+                _breaking3D.mesh.rotation.y += 0.015;
+                _breaking3D.mesh.rotation.x = Math.sin(performance.now() * 0.001) * 0.05;
+            }
+            if (_breaking3D.renderer && _breaking3D.scene && _breaking3D.camera) {
+                _breaking3D.renderer.render(_breaking3D.scene, _breaking3D.camera);
+            }
+        }
+
+        function showBreaking3D() {
+            if (!_breaking3D.renderer || !_breaking3D.font) {
+                // Font not ready or WebGL unavailable; fail silently
+                return;
+            }
+            if (_breaking3D.mesh) {
+                _breaking3D.scene.remove(_breaking3D.mesh);
+                _breaking3D.mesh.geometry.dispose();
+                // material will be reused/GC'd
+                _breaking3D.mesh = null;
+            }
+            const mesh = _createBreakingMesh();
+            if (!mesh) return;
+            _breaking3D.mesh = mesh;
+            mesh.scale.set(0.6, 0.6, 0.6);
+            mesh.rotation.set(0, -0.4, 0);
+            _breaking3D.active = true;
+            _renderBreaking();
+
+            // Animate in/out
+            const mat = mesh.material;
+            gsap.timeline()
+                .to(mat, { duration: 0.18, opacity: 1, ease: 'power2.out' })
+                .to(mesh.scale, { duration: 0.5, x: 1.05, y: 1.05, z: 1.05, ease: 'back.out(2.2)' }, '<')
+                .to(mat, { duration: 0.5, emissiveIntensity: 1.1, yoyo: true, repeat: 1, ease: 'sine.inOut' }, '-=0.45')
+                .to({}, { duration: 0.2 })
+                .to(mat, { duration: 0.25, opacity: 0, ease: 'power2.in', onComplete: () => {
+                    _breaking3D.active = false;
+                    cancelAnimationFrame(_breaking3D.raf);
+                    if (_breaking3D.mesh) {
+                        _breaking3D.scene.remove(_breaking3D.mesh);
+                        _breaking3D.mesh.geometry.dispose();
+                        _breaking3D.mesh = null;
+                    }
+                }});
+        }
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'b' || e.key === 'B') {
+                toggleBreakingBox();
+            }
+        });
+
+        // Initialize everything
+        window.addEventListener('load', () => {
+            console.log('🎬 Full HD 1080p60 News Graphics Loading...');
+            console.log('📺 Recommended OBS Settings:');
+            console.log('   Resolution: 1920x1080 (Full HD)');
+            console.log('   FPS: 60');
+            console.log('   Video Bitrate: 8000 Kbps');
+            console.log('   Audio: 48kHz AAC 320 Kbps Stereo');
+            console.log('   Color: Rec.709 Full Range');
+            
+            initGSAPAnimations();
+            initVideo();
+            
+            // Initialize breaking news with immediate fallback text
+            console.log('📰 Initializing breaking news...');
+            const breakingContent = document.getElementById('breakingContent');
+            console.log('Breaking content element:', breakingContent ? 'FOUND' : 'NOT FOUND');
+            
+            if (breakingContent) {
+                // Set immediate placeholder to ensure something shows
+                breakingContent.textContent = 'LOADING LATEST BREAKING NEWS...';
+                breakingContent.style.display = 'block';
+                breakingContent.style.visibility = 'visible';
+                breakingContent.style.opacity = '1';
+                console.log('✓ Breaking news placeholder set');
+            }
+            
+            // Initialize ticker with immediate visibility check
+            console.log('🎫 Initializing ticker...');
+            const tickerEl = document.getElementById('ticker');
+            const tickerContent = document.getElementById('tickerContent');
+            console.log('Ticker element:', tickerEl ? 'FOUND' : 'NOT FOUND');
+            console.log('Ticker content element:', tickerContent ? 'FOUND' : 'NOT FOUND');
+            
+            if (tickerEl) {
+                tickerEl.style.display = 'block';
+                tickerEl.style.visibility = 'visible';
+                tickerEl.style.opacity = '1';
+            }
+            
+            if (tickerContent) {
+                // Set immediate placeholder for ticker
+                tickerContent.textContent = 'LOADING LATEST NEWS UPDATES... • PLEASE WAIT...';
+                tickerContent.style.display = 'inline-block';
+                tickerContent.style.visibility = 'visible';
+                tickerContent.style.opacity = '1';
+                console.log('✓ Ticker placeholder set');
+            }
+            
+            startTickerUpdates();
+            startBreakingUpdates();
+            startTickerLabelFlip(); // Start label flip animation
+            
+            console.log('✅ Full HD News Graphics Initialized');
+        });
+
+        // Ticker Label Flip: Alternate between "BIG BREAKING" and UK Time
+        function updateUKTime() {
+            const ukTimeEl = document.getElementById('ukTime');
+            if (ukTimeEl) {
+                const now = new Date();
+                // Add 22 seconds for delay compensation
+                now.setSeconds(now.getSeconds() + 22);
+                
+                // UK time (Europe/London) in 12-hour format
+                const ukTimeStr = now.toLocaleTimeString('en-US', {
+                    timeZone: 'Europe/London',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit',
+                    hour12: true
+                });
+                ukTimeEl.textContent = ukTimeStr;
+            }
+        }
+
+        function startTickerLabelFlip() {
+            const labelEl = document.getElementById('tickerLabel');
+            if (!labelEl) return;
+
+            // Update UK time every second
+            updateUKTime();
+            setInterval(updateUKTime, 1000);
+
+            // Flip between label and time every 3 seconds
+            setInterval(() => {
+                labelEl.classList.toggle('flipped');
+            }, 3000);
+        }
+
+        // Removed resize listener for removed label box
+    </script>
+</body>
+</html>
